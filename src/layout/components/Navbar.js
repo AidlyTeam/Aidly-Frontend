@@ -1,39 +1,51 @@
-import { Box, Card, CardContent, ListSubheader } from "@mui/material";
-import themeConfig from "@/configs/themeConfig";
+import { Box, Card, CardContent } from "@mui/material";
 import NavigationList from "./navigation";
+import Image from "next/image";
+import logo from "../../assets/logo/Adsız tasarım.png";
 
 const Navbar = () => {
   return (
     <Card
       sx={{
-        width: '400px',
-        maxHeight: '100vh',
-        height: 'calc(100vh - 80px)',
-        maxHeight: 'calc(100vh - 82px)',
+        width: '300px',
         position: 'relative',
+        height: '100vh',
       }}
     >
-      <CardContent sx={{ pb: 0 }}>
-        <ListSubheader component="div" sx={{ borderRadius: '1.25rem 0rem 1.25rem 0rem', mb: '0.5rem', textAlign: 'center' }}>
-          {themeConfig.templateName}
-        </ListSubheader>
-      </CardContent>
+     <Box></Box>
 
       <CardContent
         sx={{
           '&::-webkit-scrollbar': {
             width: '0px'
           },
-          height: 'calc(100% - 88px)',
           position: 'relative',
           overflow: 'auto',
-          pt: 0
+          pt : "36px"
         }}
       >
         <Box sx={{ height: 'auto' }}>
           <NavigationList />
         </Box>
+        
       </CardContent>
+      <Box
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            textAlign: 'center',
+          }}
+        >
+          <Image
+            src={logo}
+            alt="Logo"
+            style={{
+              width: '50%',
+              height: 'auto',
+              objectFit: 'contain',
+            }}
+          />
+        </Box>
     </Card>
   );
 };

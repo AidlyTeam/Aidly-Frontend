@@ -1,7 +1,8 @@
 import { hexToRGBA } from "@/utils/hex-to-rgba";
 
 const text = {
-    primary: "#F0F3F6",
+    primary: "#343a40",
+    light : "#ffffff",
 };
 
 const border = {
@@ -62,7 +63,7 @@ const palette = {
     },
     background: {
         default: "#0A0C10",
-        paper: "#272B33",
+        paper: "#ffff",
     },
     border: {
         main: border.main,

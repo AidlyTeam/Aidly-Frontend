@@ -2,80 +2,104 @@
 import Navbar from "@/layout/components/Navbar";
 import Footer from "@/layout/components/Footer";
 import ScrollTop from "@/layout/components/ScrollTop";
-// import NextNProgress from "nextjs-progressbar";
 import { useState, useEffect, Fragment } from "react";
-import { Box, Container } from "@mui/material";
+import { Box, IconButton, Drawer } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import CustomBreadcrumbs from "@/components/breadcrumbs";
 import { useRouter } from "next/router";
 import navigation from "@/navigation";
 import findParent from "@/utils/findParent";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Layout = ({ children }) => {
-
     const router = useRouter();
-
     const [mounted, setMounted] = useState(false);
-    const [navbarHeight, setNavbarHeight] = useState(88);
-    const [footerHeight, setFooterHeight] = useState(290);
+    const [mobileOpen, setMobileOpen] = useState(false);
+    
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md")); 
 
-    // useEffect(() => {
-    //     const navbar = document.getElementById("navbar");
-    //     const footer = document.getElementById("footer");
-
-    //     if (navbar) setNavbarHeight(navbar.offsetHeight);
-    //     if (footer) setFooterHeight(footer.offsetHeight);
-    // }, []);
+    const navbarWidth = 300; 
+    
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
+    const titles = findParent(navigation, router.pathname);
 
-    const titles = findParent(navigation, router.pathname)
-
-    if (!mounted) return <>{children}</>
+    if (!mounted) return <>{children}</>;
 
     return (
         <Fragment>
-            {/* <NextNProgress
-                color="#e11d48"
-                startPosition={0.3}
-                stopDelayMs={200}
-                height={3}
-                showOnShallow={true}
-                options={{ easing: "ease-in-out", speed: 500 }}
-            /> */}
-            {/* <Navbar /> */}
+            <Box sx={{ width: "100%", display: "flex", minHeight: "100vh" }}>
+                
+                {isMobile && (
+                    <IconButton
+                        sx={{ 
+                            position: "fixed", 
+                            top: 16, 
+                            right: 16, 
+                            zIndex: 1300, 
+                            "&:hover": {
+                                backgroundColor: mobileOpen ? theme.palette.primary.dark : "transparent",
+                            },
+                            color: mobileOpen ? "white" : theme.palette.primary.main,
+                            borderRadius: "50%",
+                        }}
+                        onClick={() => setMobileOpen((prev) => !prev)}
+                        aria-label="menu"
+                        size="large"
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                )}
 
-            <Box sx={{
-                width: '100%', display: 'flex', py: '40px',
-                minHeight: `calc(100vh - 80px)`,
-                gap: '40px',
-            }}>
-                <Navbar />
-
-                <Container maxWidth="xl">
-                    <Box
+                {!isMobile && (
+                    <Box 
                         sx={{
-                            // minHeight: `calc(100vh - ${(navbarHeight || 0) + (footerHeight || 0)}px)`
-                            position: 'relative',
-                            minHeight: `calc(100%)`,
-                            maxWidth: '100%',
-                            width: '100%',
-                            // ml: '200px'
+                            position: "fixed", 
+                            left: 0, 
+                            top: 0,
+                            color: "white",
+                            zIndex: 1000
                         }}
                     >
-                        <CustomBreadcrumbs titles={titles} />
-
-                        <Box sx={{ mt: '1rem' }}>
-                            {children}
-                        </Box>
+                        <Navbar />
                     </Box>
-                </Container>
+                )}
+
+                <Drawer
+                    anchor="right" 
+                    open={mobileOpen}
+                    onClose={() => setMobileOpen(false)}
+                    sx={{
+                        "& .MuiDrawer-paper": { 
+                            width: navbarWidth, 
+                            color: theme.palette.primary.main, 
+                        },
+                    }}
+                >
+                    <Navbar isDrawer={true} />
+                </Drawer>
+
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        ml: isMobile ? 0 : `${navbarWidth}px`, 
+                        px: 3,
+                        py: 5,
+                        maxWidth: isMobile ? "100%" : `calc(100% - ${navbarWidth}px)`,
+                    }}
+                >
+                    <CustomBreadcrumbs titles={titles} />
+
+                    <Box sx={{ mt: "1rem" }}>{children}</Box>
+                </Box>
             </Box>
 
             <Footer />
-            {/* Other components */}
             <ScrollTop />
         </Fragment>
     );

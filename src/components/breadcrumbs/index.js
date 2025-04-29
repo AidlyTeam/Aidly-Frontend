@@ -2,7 +2,15 @@ import { Breadcrumbs, Link, Typography } from '@mui/material'
 
 const CustomBreadcrumbs = ({ titles }) => {
     return (
-        <Breadcrumbs separator="›" aria-label="breadcrumb">
+        <Breadcrumbs separator="›" aria-label="breadcrumb"
+            sx={{
+                '& .MuiBreadcrumbs-ol': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                },
+            }}
+        >
             {
                 titles.map((item, index) => (
                     (index == titles.length - 1)

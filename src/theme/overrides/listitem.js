@@ -26,7 +26,7 @@ const listitem = theme => {
       styleOverrides: {
         root: ({ ownerState }) => ({
           fontSize: "1rem",
-          borderRadius: "1.25rem 0rem 1.25rem 0rem",
+          borderRadius: "0.3rem",
           backgroundColor: ownerState.active ? theme.palette.action.active : "transparent",
         }),
       },

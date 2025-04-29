@@ -13,7 +13,7 @@ const themeConfig = {
     acl: true /* true | false */,
 
     // ** Other Configs
-    toastPosition: 'top-right' /* top-left | top-center | top-right | bottom-left | bottom-center | bottom-right */
+    toastPosition: 'bottom-right' /* top-left | top-center | top-right | bottom-left | bottom-center | bottom-right */
 }
 
 export default themeConfig
