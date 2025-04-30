@@ -26,9 +26,9 @@ const palette = {
     },
     divider: border.main,
     primary: {
-        main: "#409EFF",
-        light: "#91CBFF",
-        dark: "#318BF8",
+        main: "#63f1f9",
+        light: "#76FCEA",
+        dark: "#54B8DC",
         contrastText: text.primary,
     },
     secondary: {
