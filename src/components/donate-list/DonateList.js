@@ -15,7 +15,8 @@ import {
 } from "@mui/material";
 import solanaIcon from "../../assets/icons/logo/solana.png";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import VerifiedIcon from '@mui/icons-material/Verified';
+import VerifiedIcon from "@mui/icons-material/Verified";
+import { useRouter } from "next/router";
 
 const donations = [
   {
@@ -28,7 +29,7 @@ const donations = [
     goal: 10000,
     raised: 4500,
     tags: ["Environment", "Urgent"],
-    verify : true,
+    verify: true,
   },
   {
     id: 2,
@@ -40,7 +41,7 @@ const donations = [
     goal: 20000,
     raised: 15000,
     tags: ["Education"],
-    verify : false,
+    verify: false,
   },
   {
     id: 3,
@@ -52,7 +53,7 @@ const donations = [
     goal: 50000,
     raised: 50000,
     tags: ["Disaster", "Urgent"],
-    verify : true,
+    verify: true,
   },
 ];
 
@@ -65,8 +66,8 @@ const DonateList = () => {
     if (progress < 75) return "linear-gradient(to right, orange, yellow)";
     return "linear-gradient(to right, yellow, green)";
   };
-  
-  
+
+  const router = useRouter();
 
   return (
     <Box>
@@ -99,65 +100,67 @@ const DonateList = () => {
                     cursor: "pointer",
                   },
                 }}
+                onClick={() => router.push(`/donates/${item.id}`)}
               >
-                <CardHeader
-                  sx={{ pb: 0 }}
-                  avatar={
-                    <Box display="flex" flexDirection="column" width="100%">
-                      <Avatar
-                        src={item.logo.src}
-                        alt={item.organization}
-                        sx={{ width: 56, height: 56, mb: 1 }}
-                      />
-                      <Box
+                <CardContent>
+                  <Box display="flex" flexDirection="column" width="100%">
+                    <Avatar
+                      src={item.logo.src}
+                      alt={item.organization}
+                      sx={{ width: 56, height: 56, mb: 1 }}
+                    />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        fontWeight={600}
+                        fontSize={18}
                         sx={{
                           display: "flex",
-                          flexDirection: "column",
-                          gap: 1,
+                          alignItems: "center",
+                          cursor: "pointer",
+                          gap: 0.5,
                         }}
                       >
-                        <Typography variant="h6" fontWeight={600}
-                          fontSize={18}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            cursor: "pointer",
-                            gap : 0.5,
-                          }}
-                        >
-                          {item.name}
-                          {item.verify && <VerifiedIcon fontSize="medium" sx={{ mr: 0.5,
-                            color: theme.palette.primary.dark,
-                           }} />}
-
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="primary.dark"
-                          fontWeight={500}
-                          fontSize={16}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          {item.organization}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="secondary.dark"
-                          fontWeight={500}
-                          fontSize={16}
-                          mb={1}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <LocationOnIcon fontSize="small" sx={{ mr: 0.5 }} />
-                          {item.location}
-                        </Typography>
-                      </Box>
+                        {item.name}
+                        {item.verify && (
+                          <VerifiedIcon
+                            fontSize="medium"
+                            sx={{ mr: 0.5, color: theme.palette.primary.dark }}
+                          />
+                        )}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="primary.dark"
+                        fontWeight={500}
+                        fontSize={16}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        {item.organization}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="secondary.dark"
+                        fontWeight={500}
+                        fontSize={16}
+                        mb={1}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <LocationOnIcon fontSize="small" sx={{ mr: 0.5 }} />
+                        {item.location}
+                      </Typography>
                     </Box>
-                  }
-                />
+                  </Box>
+                </CardContent>
 
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography
@@ -226,8 +229,6 @@ const DonateList = () => {
                       }}
                     />
                   </Box>
-
-
                 </CardContent>
               </Card>
             </Grid>
