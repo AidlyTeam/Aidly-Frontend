@@ -13,8 +13,10 @@ import {
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { theme } from "@/configs/theme";
-import Avatar from '@mui/material/Avatar';
-import AvatarGroup from '@mui/material/AvatarGroup';
+import Avatar from "@mui/material/Avatar";
+import AvatarGroup from "@mui/material/AvatarGroup";
+import DonatePopup from "../popup/DonatePopup";
+import { useState } from "react";
 
 const DonateDetailPagesCard = () => {
   const donateDetails = {
@@ -40,6 +42,16 @@ const DonateDetailPagesCard = () => {
     if (progress < 75) return "linear-gradient(to right, orange, yellow)";
     return "linear-gradient(to right, yellow, green)";
   };
+
+  const [open, setOpen] = useState(false);
+
+  const handleDonateClick = () => {
+    setOpen(true);
+  }
+  const handleClose = () => {
+    setOpen(false);
+  };
+
 
   return (
     <Grid container spacing={3}>
@@ -73,25 +85,25 @@ const DonateDetailPagesCard = () => {
                 >
                   {donateDetails.organization}
                 </Typography> */}
-                 <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
-              {donateDetails.tags.map((tag) => (
-                <Chip
-                  key={tag}
-                  label={tag}
-                  variant="outlined"
-                  color={tag.toLowerCase() === "urgent" ? "error" : "info"}
-                  size="small"
-                  sx={
-                    tag.toLowerCase() === "urgent"
-                      ? {
-                          animation: "pulse 1s infinite",
-                          borderColor: theme.palette.error.main,
-                        }
-                      : {}
-                  }
-                />
-              ))}
-            </Stack>
+                <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
+                  {donateDetails.tags.map((tag) => (
+                    <Chip
+                      key={tag}
+                      label={tag}
+                      variant="outlined"
+                      color={tag.toLowerCase() === "urgent" ? "error" : "info"}
+                      size="small"
+                      sx={
+                        tag.toLowerCase() === "urgent"
+                          ? {
+                              animation: "pulse 1s infinite",
+                              borderColor: theme.palette.error.main,
+                            }
+                          : {}
+                      }
+                    />
+                  ))}
+                </Stack>
 
                 <Typography
                   variant="h6"
@@ -165,33 +177,29 @@ const DonateDetailPagesCard = () => {
               }}
             />
 
-           
-
             <Box
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginTop: "16px",
-                    gap : 2,
-                }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: "16px",
+                gap: 2,
+              }}
             >
               <AvatarGroup max={4} spacing="small">
-              <Avatar src="https://randomuser.me/api/portraits/women/2.jpg" />
-              <Avatar src="https://randomuser.me/api/portraits/men/22.jpg" />
-              <Avatar src="https://randomuser.me/api/portraits/women/32.jpg" />
-              <Avatar src="https://randomuser.me/api/portraits/men/32.jpg" />
-              <Avatar src="https://randomuser.me/api/portraits/men/32.jpg" />
-
-
+                <Avatar src="https://randomuser.me/api/portraits/women/2.jpg" />
+                <Avatar src="https://randomuser.me/api/portraits/men/22.jpg" />
+                <Avatar src="https://randomuser.me/api/portraits/women/32.jpg" />
+                <Avatar src="https://randomuser.me/api/portraits/men/32.jpg" />
+                <Avatar src="https://randomuser.me/api/portraits/men/32.jpg" />
               </AvatarGroup>
-                <Typography
-                    variant="body2"
-                    fontWeight={500}
-                    color={theme.palette.secondary.dark}
-                    fontSize={16}
-                >
-              Total Donors: 5
-                </Typography>
+              <Typography
+                variant="body2"
+                fontWeight={500}
+                color={theme.palette.secondary.dark}
+                fontSize={16}
+              >
+                Total Donors: 5
+              </Typography>
             </Box>
 
             <Box mt={2}>
@@ -231,7 +239,8 @@ const DonateDetailPagesCard = () => {
             }}
           >
             <Button
-              variant="contained"
+              variant="contained"ü
+              onClick={handleDonateClick} 
               sx={{
                 marginLeft: "auto",
                 marginRight: "0",
@@ -274,6 +283,11 @@ const DonateDetailPagesCard = () => {
           </Box>
         </Card>
       </Grid>
+      <DonatePopup
+        open={open}
+        onClose={handleClose}
+        organization={donateDetails.name}
+      />
     </Grid>
   );
 };
