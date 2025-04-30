@@ -42,7 +42,6 @@ const FilterBar = ({
 
   return (
     <Grid container spacing={2} alignItems="center" mb={2}>
-      {/* Search Input */}
       <Grid item xs={12} md={6}>
         <Box sx={boxStyle}>
           <SearchIcon sx={{ color: "#8a94a6", mr: 1 }} />
@@ -63,7 +62,6 @@ const FilterBar = ({
         </Box>
       </Grid>
 
-      {/* Urgency Filter */}
       <Grid item xs={12} md={2}>
         <Box sx={boxStyle}>
           <SyncProblemIcon sx={{ color: "#8a94a6", mr: 1 }} />
@@ -96,7 +94,6 @@ const FilterBar = ({
         </Box>
       </Grid>
 
-      {/* Tag Filter */}
       <Grid item xs={12} md={4}>
         <Box sx={boxStyle}>
           <CategoryIcon sx={{ color: "#8a94a6", mr: 1 }} />
