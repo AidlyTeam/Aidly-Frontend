@@ -1,13 +1,8 @@
 import React, { useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Container,
-  Paper,
-} from "@mui/material";
+import { Box, Typography, Button, Container, Paper } from "@mui/material";
 import { theme } from "@/configs/theme";
 import confetti from "canvas-confetti";
+import { useRouter } from "next/router";
 const { default: BlankLayout } = require("@/layout/BlankLayout");
 
 const DonateComplate = () => {
@@ -18,6 +13,8 @@ const DonateComplate = () => {
       origin: { y: 0.6 },
     });
   }, []);
+
+  const router = useRouter();
 
   return (
     <Box
@@ -62,6 +59,7 @@ const DonateComplate = () => {
 
           <Button
             variant="contained"
+            onClick={() => router.push("/")}
             sx={{
               marginLeft: "auto",
               marginRight: "0",
@@ -104,7 +102,6 @@ const DonateComplate = () => {
         </Paper>
       </Container>
 
-      {/* CSS Animasyonu */}
       <style>{`
         @keyframes popIn {
           0% {

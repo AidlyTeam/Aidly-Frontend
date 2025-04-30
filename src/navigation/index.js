@@ -37,14 +37,7 @@ const navigation = [
                 permission: "team-members",
                 icon: <LoyaltyIcon />,
             },
-            {
-                type: "item",
-                path: "/profile/settings",
-                title: "Settings",
-                role: "admin",
-                permission: "team-settings",
-                icon: <Settings />
-            }
+        
         ]
     },
     // divider
