@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.15.3",
     "@mui/lab": "^5.0.0-alpha.158",
     "@mui/material": "^5.15.2",
+    "@mui/x-data-grid": "^7.29.1",
     "@reduxjs/toolkit": "^2.2.0",
     "@svgr/webpack": "^8.1.0",
     "accept-language": "^3.0.18",

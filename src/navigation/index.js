@@ -4,6 +4,9 @@ import Person3Icon from '@mui/icons-material/Person3';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import LoyaltyIcon from '@mui/icons-material/Loyalty';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import ListIcon from '@mui/icons-material/List';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 /*
     @data structure
     {
@@ -43,6 +46,24 @@ const navigation = [
     // divider
     { 
         type: "divider",
+        permission: "admin",
+    },
+    { // single item
+        type: "item",
+        path: "/admin/user-list",
+        title: "Users",
+        icon: <PeopleAltIcon />,
+        permission: "admin",
+    },
+    { // single item
+        type: "item",
+        path: "/admin/organization-list",
+        title: "Organizations",
+        icon: <CorporateFareIcon />,
+        permission: "admin",
+    },
+    { 
+        type: "divider",
         permission: "home",
     },
     { // single item
@@ -59,7 +80,10 @@ const navigation = [
         icon: <VolunteerActivismIcon />,
         permission: "home",
     },
- 
+    { 
+        type: "divider",
+        permission: "home",
+    },
     // { // item with children
     //     type: "item",
     //     title: "Team",
