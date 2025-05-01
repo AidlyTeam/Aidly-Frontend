@@ -111,14 +111,14 @@ const DonatePopup = ({ open, onClose }) => {
                 onChange={(e) => setAgree(e.target.checked)}
               />
             }
-            label="Bağışı onaylıyorum"
+            label="I agree to the terms and conditions"
           />
         </Stack>
       </DialogContent>
 
       <DialogActions>
         <Button onClick={onClose} color="secondary" variant="contained">
-          Vazgeç
+          Cancel
         </Button>
         <Button
           variant="contained"
@@ -160,7 +160,7 @@ const DonatePopup = ({ open, onClose }) => {
             },
           }}
         >
-          Donate Gönder
+          Donate Now
         </Button>
       </DialogActions>
     </Dialog>

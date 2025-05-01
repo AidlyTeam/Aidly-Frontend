@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Delete, Visibility } from "@mui/icons-material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import CustomTooltip from "@/components/tooltip";
 
 
 const UserActions = ({ row }) => {
@@ -15,13 +16,13 @@ const UserActions = ({ row }) => {
 
   return (
     <>
-      <Tooltip title="Detay">
-      </Tooltip>
-      <Tooltip title="Sil">
+      <CustomTooltip title="Delete"
+      
+      >
         <IconButton onClick={() => setOpenDelete(true)}>
           <Delete />
         </IconButton>
-      </Tooltip>
+      </CustomTooltip>
    
       
 

@@ -173,7 +173,7 @@ export const organizationListColumn = [
   {
     flex: 0.1,
     minWidth: 152,
-    headerName: "İşlemler",
+    headerName: "Actions",
     field: "actions",
     renderCell: (params) => <OrganizationActions row={params.row} />,
   },

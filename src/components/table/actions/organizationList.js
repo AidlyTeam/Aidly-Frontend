@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import UnpublishedIcon from "@mui/icons-material/Unpublished";
+import CustomTooltip from "@/components/tooltip";
 const OrganizationActions = ({ row }) => {
   const router = useRouter();
   const [openDelete, setOpenDelete] = useState(false);
@@ -17,17 +18,17 @@ const OrganizationActions = ({ row }) => {
 
   return (
     <>
-      <Tooltip title="Detay">
+      <CustomTooltip title="View">
         <IconButton onClick={() => router.push(`/admin/organization-list/${row.id}`)}>
           <Visibility />
         </IconButton>
-      </Tooltip>
-      <Tooltip title="Sil">
+      </CustomTooltip>
+      <CustomTooltip title="Delete">
         <IconButton onClick={() => setOpenDelete(true)}>
           <Delete />
         </IconButton>
-      </Tooltip>
-      <Tooltip
+      </CustomTooltip>
+      <CustomTooltip
         title={isVerified ? "Verify" : " Unverify"}
         arrow
         sx={{
@@ -45,7 +46,7 @@ const OrganizationActions = ({ row }) => {
         >
           {isVerified ? <UnpublishedIcon /> : <TaskAltIcon />}
         </IconButton>
-      </Tooltip>
+      </CustomTooltip>
     </>
   );
 };
