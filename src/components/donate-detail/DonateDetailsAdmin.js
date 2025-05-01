@@ -17,8 +17,10 @@ import Avatar from "@mui/material/Avatar";
 import AvatarGroup from "@mui/material/AvatarGroup";
 import DonatePopup from "../popup/DonatePopup";
 import { useState } from "react";
+import UnpublishedIcon from "@mui/icons-material/Unpublished";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
 
-const DonateDetailPagesCard = () => {
+const DonateDetailAdminPagesCard = () => {
   const donateDetails = {
     id: 1,
     logo: "https://example.com/logo.png",
@@ -47,11 +49,14 @@ const DonateDetailPagesCard = () => {
 
   const handleDonateClick = () => {
     setOpen(true);
-  }
+  };
   const handleClose = () => {
     setOpen(false);
   };
+  const [isVerified, setIsVerified] = useState(donateDetails.verify);
 
+  const handleVerify = () => setIsVerified(true);
+  const handleUnverify = () => setIsVerified(false);
 
   return (
     <Grid container spacing={3}>
@@ -77,14 +82,14 @@ const DonateDetailPagesCard = () => {
                 }}
               >
                 {/* <Typography
-                  variant="body2"
-                  color="primary.dark"
-                  fontWeight={500}
-                  fontSize={16}
-                  sx={{ cursor: "pointer" }}
-                >
-                  {donateDetails.organization}
-                </Typography> */}
+                    variant="body2"
+                    color="primary.dark"
+                    fontWeight={500}
+                    fontSize={16}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    {donateDetails.organization}
+                  </Typography> */}
                 <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
                   {donateDetails.tags.map((tag) => (
                     <Chip
@@ -238,9 +243,54 @@ const DonateDetailPagesCard = () => {
               width: "97%",
             }}
           >
+            {isVerified ? (
+              <Button
+                onClick={handleUnverify}
+                startIcon={<UnpublishedIcon />}
+                variant="outlined"
+                sx={{
+                  fontSize: "14px",
+                  padding: "6px 20px",
+                  borderRadius: "10px",
+                  color: "#ff4081",
+                  borderColor: "#ff4081",
+                  boxShadow: "0 0 8px rgba(255, 64, 129, 0.4)",
+                  textTransform: "none",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 64, 129, 0.1)",
+                    borderColor: "#ff4081",
+                  },
+                }}
+              >
+                Unverify
+              </Button>
+            ) : (
+              <Button
+                onClick={handleVerify}
+                startIcon={<TaskAltIcon />}
+                variant="outlined"
+                sx={{
+                  fontSize: "14px",
+                  padding: "6px 20px",
+                  borderRadius: "10px",
+                  color: "#00ffa2",
+                  borderColor: "#00ffa2",
+                  boxShadow: "0 0 8px rgba(0, 255, 163, 0.5)",
+                  textTransform: "none",
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 255, 163, 0.1)",
+                    borderColor: "#00ffa2",
+                  },
+                }}
+              >
+                Verify
+              </Button>
+            )}
+
             <Button
-              variant="contained"ü
-              onClick={handleDonateClick} 
+              variant="contained"
+              ü
+              onClick={handleDonateClick}
               sx={{
                 marginLeft: "auto",
                 marginRight: "0",
@@ -292,4 +342,4 @@ const DonateDetailPagesCard = () => {
   );
 };
 
-export default DonateDetailPagesCard;
+export default DonateDetailAdminPagesCard;
