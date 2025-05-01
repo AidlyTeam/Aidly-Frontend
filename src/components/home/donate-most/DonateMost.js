@@ -13,7 +13,7 @@ import {
   useTheme,
   Button,
 } from "@mui/material";
-import solanaIcon from "../../assets/icons/logo/solana.png";
+import solanaIcon from "../../../assets/icons/logo/solana.png";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { useRouter } from "next/router";
@@ -55,33 +55,9 @@ const donations = [
     tags: ["Disaster", "Urgent"],
     verify: true,
   },
-  {
-    id: 4,
-    logo: solanaIcon,
-    name: "Wildlife Conservation",
-    organization: "Nature's Guardians",
-    location: "Brazil",
-    date: "27 Apr 2025",
-    goal: 30000,
-    raised: 20000,
-    tags: ["Environment"],
-    verify: false,
-  },
-  {
-    id: 5,
-    logo: solanaIcon,
-    name: "Food Security Initiative",
-    organization: "Feed the World",
-    location: "India",
-    date: "26 Apr 2025",
-    goal: 25000,
-    raised: 10000,
-    tags: ["Food", "Urgent"],
-    verify: true,
-  },
 ];
 
-const DonateList = () => {
+const DonateMost = () => {
   const theme = useTheme();
 
   const getProgressGradient = (progress) => {
@@ -114,7 +90,6 @@ const DonateList = () => {
                 sx={{
                   borderRadius: 4,
                   height: "100%",
-                  width: "100%",
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
@@ -264,4 +239,4 @@ const DonateList = () => {
   );
 };
 
-export default DonateList;
+export default DonateMost;
