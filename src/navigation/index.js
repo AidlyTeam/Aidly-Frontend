@@ -7,6 +7,7 @@ import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import ListIcon from '@mui/icons-material/List';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import PolylineIcon from '@mui/icons-material/Polyline';
 /*
     @data structure
     {
@@ -32,6 +33,13 @@ const navigation = [
                 title: "My Info",
                 permission: "team-members",
                 icon: <SettingsAccessibilityIcon />,
+            },
+            {
+                type: "item",
+                path: "/profile/my-organizations",
+                title: "My Organizations",
+                permission: "team-members",
+                icon: <PolylineIcon />,
             },
             {
                 type: "item",
