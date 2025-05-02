@@ -7,19 +7,20 @@ const container = (theme) => {
           fontSize: "16px",
           opacity: 1,
           textTransform: "none",
+          
           "&:hover": {
             backgroundColor: theme.palette.primary.dark + "!important",
             boxShadow: `0px 2px 6px ${theme.palette.common.black}`,
           },
 
           ...(ownerState.variant == "outlined" && {
-            color: theme.palette[ownerState.color].main,
+            color: theme.palette[ownerState.color].dark,
             backgroundColor: "transparent",
             border: `1px solid ${theme.palette[ownerState.color || "primary"].main}`,
             "&:hover": {
               
             border: `1px solid ${theme.palette[ownerState.color].light}`,
-              color: theme.palette[ownerState.color].light + "!important",
+              color: theme.palette[ownerState.color].dark + "!important",
               // backgroundColor: `${
               //   theme.palette[ownerState.color].main
               // // } !important`,
