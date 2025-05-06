@@ -16,20 +16,20 @@ import { theme } from "@/configs/theme";
 import { useRouter } from "next/router";
 
 const dummyCampaigns = [
-  // {
-  //   id: 1,
-  //   title: "Web3 for All",
-  //   description: "A campaign to educate people about Web3.",
-  //   collected: 5.0,
-  //   target: 10.0,
-  // },
-  // {
-  //   id: 2,
-  //   title: "Decentralized Future",
-  //   description: "Funding for decentralized applications.",
-  //   collected: 3.5,
-  //   target: 8.0,
-  // },
+  {
+    id: 1,
+    title: "Web3 for All",
+    description: "A campaign to educate people about Web3.",
+    collected: 5.0,
+    target: 10.0,
+  },
+  {
+    id: 2,
+    title: "Decentralized Future",
+    description: "Funding for decentralized applications.",
+    collected: 3.5,
+    target: 8.0,
+  },
 ];
 
 const MyOrganizations = () => {

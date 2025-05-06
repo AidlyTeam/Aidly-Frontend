@@ -5,27 +5,27 @@ import NoDonations from '@/components/profile/NoDonation';
 import { useRouter } from 'next/router';
 
 const ProfileDonate = () => {
-  const donations = []; 
-  // const donations = [
-  //   {
-  //     id: 1,
-  //     organization: "Clean Water Project",
-  //     amount: 100,
-  //     date: "2023-10-01",
-  //   },
-  //   {
-  //     id: 2,
-  //     organization: "Food for All",
-  //     amount: 50,
-  //     date: "2023-09-15",
-  //   },
-  //   {
-  //     id: 3,
-  //     organization: "Tree Plantation Initiative",
-  //     amount: 200,
-  //     date: "2023-08-20",
-  //   },
-  // ];
+  // const donations = []; 
+  const donations = [
+    {
+      id: 1,
+      organization: "Clean Water Project",
+      amount: 100,
+      date: "2023-10-01",
+    },
+    {
+      id: 2,
+      organization: "Food for All",
+      amount: 50,
+      date: "2023-09-15",
+    },
+    {
+      id: 3,
+      organization: "Tree Plantation Initiative",
+      amount: 200,
+      date: "2023-08-20",
+    },
+  ];
 
   const router = useRouter();
   const handleDonateClick = () => {

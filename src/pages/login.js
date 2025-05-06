@@ -4,38 +4,51 @@ import { useRouter } from "next/router";
 import { Button, Typography, Container, Box } from "@mui/material";
 import Image from "next/image";
 import logo from "../assets/logo/Adsız tasarım.png";
+import { postAuth } from "@/store/auth/authSlice";
+import { useDispatch } from "react-redux";
+import bs58 from 'bs58';
 
 const Login = () => {
   const { setUser } = useContext(AuthContext);
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const connectPhantom = async () => {
-    if (!window.solana?.isPhantom) {
-      alert("Phantom Wallet bulunamadı. Lütfen Phantom eklentisini kurun.");
-      return;
-    }
+ 
+const connectPhantom = async () => {
+  if (!window.solana?.isPhantom) {
+    alert("Phantom Wallet bulunamadı. Lütfen Phantom eklentisini kurun.");
+    return;
+  }
 
-    try {
-      const resp = await window.solana.connect();
-      const publicKey = resp.publicKey.toString();
-      const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
-      const encodedMessage = new TextEncoder().encode(message);
-      const signed = await window.solana.signMessage(encodedMessage, "utf8");
+  try {
+    const resp = await window.solana.connect();
+    const walletAddress = resp.publicKey.toString();
+    const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
+    const encodedMessage = new TextEncoder().encode(message);
+    const signed = await window.solana.signMessage(encodedMessage, "utf8");
 
-      const user = {
-        publicKey,
-        message,
-        signedMessage: Buffer.from(signed.signature).toString("base64"),
-        role: "user",
-      };
+    const signatureBase58 = bs58.encode(signed.signature);
 
-      localStorage.setItem("userData", JSON.stringify(user));
-      setUser(user);
-      router.push("/");
-    } catch (err) {
-      console.error("Phantom bağlantı hatası:", err);
-    }
-  };
+    const payload = {
+      message,
+      signatureBase58,
+      walletAddress,
+    };
+
+    const result = await dispatch(postAuth(payload)).unwrap();
+
+    const user = {
+      ...result,
+      role: "user",
+    };
+
+    localStorage.setItem("userData", JSON.stringify(user));
+    setUser(user);
+    router.push("/");
+  } catch (err) {
+    console.error("Phantom bağlantı hatası:", err);
+  }
+};
 
   return (
     <Box

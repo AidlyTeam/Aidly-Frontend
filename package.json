@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "export PORT=8080 && next dev",
+    "dev": "export PORT=3000 && next dev",
     "build": "next build",
-    "start": "export PORT=8080 && next start",
+    "start": "export PORT=3000 && next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "accept-language": "^3.0.18",
     "autoprefixer": "10.4.14",
     "axios": "^1.6.7",
+    "bs58": "^6.0.0",
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.0.0",
     "eslint-config-next": "^14.0.4",
