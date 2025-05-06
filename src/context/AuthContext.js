@@ -1,11 +1,7 @@
-// ** React Imports
 import { createContext, useEffect, useState } from 'react'
-// ** Next Import
 import { useRouter } from 'next/router'
-// ** Axios
 import authConfig from '@/configs/auth'
 
-// ** Defaults
 const defaultProvider = {
   user: null,
   loading: true,
@@ -21,42 +17,53 @@ const defaultProvider = {
 const AuthContext = createContext(defaultProvider)
 
 const AuthProvider = ({ children }) => {
-  // ** States
   const [user, setUser] = useState(defaultProvider.user)
   const [loading, setLoading] = useState(defaultProvider.loading)
   const [isInitialized, setIsInitialized] = useState(defaultProvider.isInitialized)
 
-  // ** Hooks
   const router = useRouter()
 
   const deleteStorage = () => {
+    localStorage.removeItem(authConfig.userDataName)
     setUser(null)
     setLoading(false)
     setIsInitialized(false)
-
-    // const firstPath = router.pathname.split('/')[1]
-    // if (firstPath != 'login') window.location.href = '/login'
+    router.replace('/login')
   }
 
   const handleLogout = () => {
     deleteStorage()
   }
 
+  const handleRegister = async ({ publicKey, message, signedMessage }) => {
+    const user = {
+      publicKey,
+      message,
+      signedMessage,
+      role: 'user'
+    }
+
+    localStorage.setItem(authConfig.userDataName, JSON.stringify(user))
+    setUser(user)
+    router.push('/')
+  }
+
   const initAuth = async () => {
     setIsInitialized(true)
-    const userData = window.localStorage.getItem(authConfig.userDataName)
 
-    if (userData) {
-      setUser(userData)
-    } else {
-      const user = { id: 1, name: "John Doe", role: "admin" }
-      setUser(user)
+    try {
+      const storedUser = localStorage.getItem(authConfig.userDataName)
+
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser)
+        setUser(parsedUser)
+      }
+    } catch (err) {
+      console.error('Auth init error:', err)
+      setUser(null)
     }
 
     setLoading(false)
-  }
-
-  const handleRegister = async ({ params }) => {
   }
 
   useEffect(() => {
