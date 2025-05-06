@@ -94,8 +94,10 @@ const Layout = ({ children }) => {
                     }}
                 >
                     <CustomBreadcrumbs titles={titles} />
+                    
 
                     <Box sx={{ mt: "1rem" }}>{children}</Box>
+                    
                 </Box>
             </Box>
 

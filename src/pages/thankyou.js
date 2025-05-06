@@ -3,7 +3,7 @@ import { Box, Typography, Button, Container, Paper } from "@mui/material";
 import { theme } from "@/configs/theme";
 import confetti from "canvas-confetti";
 import { useRouter } from "next/router";
-const { default: BlankLayout } = require("@/layout/BlankLayout");
+import BlankLayout from '@/layout/BlankLayout'
 
 const DonateComplate = () => {
   useEffect(() => {
@@ -121,7 +121,5 @@ const DonateComplate = () => {
   );
 };
 
-DonateComplate.guestGuard = true;
-DonateComplate.getLayout = (page) => <BlankLayout>{page}</BlankLayout>;
-
-export default DonateComplate;
+DonateComplate.getLayout = page => <BlankLayout>{page}</BlankLayout>
+export default DonateComplate
