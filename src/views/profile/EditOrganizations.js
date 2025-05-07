@@ -1,38 +1,80 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Typography, Grid, Card } from "@mui/material";
+import { Box, Button, Typography, Grid, Card, TextField, RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from "@mui/material";
 import EditedText from "@/components/EditedText/EditedText";
+import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import { getCampaign, updateCampaign } from "@/store/campaign/campaignSlice";
 
 const EditOrganizations = () => {
-  const existingData = {
-    title: "Save the Ocean",
-    description: "A campaign to clean plastic from oceans.",
-    walletAddress: "4nV7...X2kM",
-    targetAmount: "150.0",
-    statusType: "ACTIVE",
-    startDate: "2025-06-01",
-    endDate: "2025-07-01",
-  };
-
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { id } = router.query;
+  const [imageFile, setImageFile] = useState(null);
   const [form, setForm] = useState({
     title: "",
     description: "",
     walletAddress: "",
     targetAmount: "",
-    statusType: "",
+    statusType: "normal",
     startDate: "",
     endDate: "",
   });
 
+  const { campaign: campaignSlice } = useSelector((state) => state);
+  const campaign = campaignSlice.data.data?.[0];
+
   useEffect(() => {
-    setForm(existingData);
-  }, []);
+    if (id) {
+      dispatch(getCampaign({ id }));
+    }
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (campaign) {
+      setForm({
+        title: campaign.title || "",
+        description: campaign.description || "",
+        walletAddress: campaign.walletAddress || "",
+        targetAmount: campaign.targetAmount || "",
+        statusType: campaign.statusType || "normal",
+        startDate: campaign.startDate ? new Date(campaign.startDate).toISOString().slice(0, 16) : "",
+        endDate: campaign.endDate ? new Date(campaign.endDate).toISOString().slice(0, 16) : "",
+      });
+    }
+  }, [campaign,id]);
 
   const handleChange = (key) => (e) => {
     setForm({ ...form, [key]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    console.log("Update to backend:", form);
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const formattedStartDate = form.startDate ? new Date(form.startDate).toISOString() : '';
+      const formattedEndDate = form.endDate ? new Date(form.endDate).toISOString() : '';
+
+      const data = {
+        ...form,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+        campaignID: id,
+        imageFile
+      };
+
+      const response = await dispatch(updateCampaign(data));
+
+      if (response.statusCode) {
+        router.push('/profile/my-organizations');
+      }
+    } catch (error) {
+      console.error('Error updating campaign:', error);
+    }
   };
 
   return (
@@ -42,6 +84,7 @@ const EditOrganizations = () => {
         borderRadius: 4,
         boxShadow: "0 0 25px rgba(0,255,163,0.2)",
         mx: "auto",
+        mt: 4,
         color: "#fff",
       }}
     >
@@ -51,10 +94,52 @@ const EditOrganizations = () => {
 
       <Grid container spacing={3}>
         <Grid item xs={12}>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body1" color="secondary.dark" fontWeight="bold" mb={1}>
+              Campaign Image
+            </Typography>
+            <input
+              accept="image/*"
+              type="file"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+              id="image-upload"
+            />
+            <label htmlFor="image-upload">
+              <Button
+                variant="outlined"
+                component="span"
+                sx={{
+                  borderColor: 'secondary.main',
+                  color: 'secondary.main',
+                  '&:hover': {
+                    borderColor: 'secondary.dark',
+                    backgroundColor: 'rgba(99, 241, 249, 0.1)',
+                  },
+                }}
+              >
+                Upload New Image
+              </Button>
+            </label>
+            {imageFile && (
+              <Typography variant="body2" color="success.main" sx={{ mt: 1 }}>
+                Selected: {imageFile.name}
+              </Typography>
+            )}
+            {campaign?.imageUrl && !imageFile && (
+              <Typography variant="body2" color="secondary.main" sx={{ mt: 1 }}>
+                Current image: {campaign.imageUrl}
+              </Typography>
+            )}
+          </Box>
+        </Grid>
+
+        <Grid item xs={12}>
           <EditedText
             label="Campaign Title"
             value={form.title}
             onChange={handleChange("title")}
+            placeholder="Enter campaign title"
             required
           />
         </Grid>
@@ -64,6 +149,7 @@ const EditOrganizations = () => {
             label="Description"
             value={form.description}
             onChange={handleChange("description")}
+            placeholder="Describe your campaign"
             required
           />
         </Grid>
@@ -73,17 +159,103 @@ const EditOrganizations = () => {
             label="Wallet Address"
             value={form.walletAddress}
             onChange={handleChange("walletAddress")}
+            placeholder="Your wallet address"
             required
           />
         </Grid>
 
         <Grid item xs={12}>
-          <EditedText
-            label="Target Amount (SOL)"
+          <Typography 
+            variant="body1"
+            color="secondary.dark"
+            fontWeight="bold"
+            mb={1}
+          >
+            Target Amount (SOL)
+          </Typography>
+          <TextField
+            type="number"
+            InputProps={{
+              startAdornment: (
+                <Box
+                  component="span"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginRight: 1,
+                  }}
+                >
+                  <Image
+                    src="/solana-sol-icon.svg"
+                    alt="Solana"
+                    width={18}
+                    height={18}
+                  />
+                </Box>
+              ),
+            }}
+            fullWidth
             value={form.targetAmount}
-            onChange={handleChange("targetAmount")}
-            required
+            onFocus={(e) => e.target.select()}
+            onBlur={(e) => {
+              if (e.target.value === "") {
+                setForm({ ...form, targetAmount: "" });
+              }
+            }}
+            placeholder="Enter target amount"
+            onChange={(e) => {
+              setForm({ ...form, targetAmount: e.target.value });
+            }}
+            sx={{
+              "& .MuiInputBase-input": {
+                fontSize: "16px",
+              },
+            }}
           />
+        </Grid>
+
+        <Grid item xs={12}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend" sx={{ color: 'secondary.dark', fontWeight: 'bold' }}>
+              Campaign Status
+            </FormLabel>
+            <RadioGroup
+              row
+              value={form.statusType}
+              onChange={handleChange("statusType")}
+            >
+              <FormControlLabel
+                value="normal"
+                control={<Radio sx={{ color: 'secondary.main', '&.Mui-checked': { color: 'secondary.main' } }} />}
+                label="Normal"
+                sx={{ color: 'secondary.dark' }}
+              />
+              <FormControlLabel
+                value="urgent"
+                control={<Radio sx={{ color: 'secondary.main', '&.Mui-checked': { color: 'secondary.main' } }} />}
+                label="Urgent"
+                sx={{ color: 'secondary.dark' }}
+              />
+              <FormControlLabel
+                value="critical"
+                control={<Radio sx={{ color: 'secondary.main', '&.Mui-checked': { color: 'secondary.main' } }} />}
+                label="Critical"
+                sx={{ color: 'secondary.dark' }}
+              />
+              <FormControlLabel
+                value="featured"
+                control={<Radio sx={{ color: 'secondary.main', '&.Mui-checked': { color: 'secondary.main' } }} />}
+                label="Featured"
+                sx={{ color: 'secondary.dark' }}
+              />
+              <FormControlLabel
+                value="scheduled"
+                control={<Radio sx={{ color: 'secondary.main', '&.Mui-checked': { color: 'secondary.main' } }} />}
+                label="Scheduled"
+                sx={{ color: 'secondary.dark' }}
+              />
+            </RadioGroup>
+          </FormControl>
         </Grid>
 
         <Grid item xs={6}>
@@ -91,7 +263,7 @@ const EditOrganizations = () => {
             label="Start Date"
             value={form.startDate}
             onChange={handleChange("startDate")}
-            type="date"
+            type="datetime-local"
             required
           />
         </Grid>
@@ -101,7 +273,7 @@ const EditOrganizations = () => {
             label="End Date"
             value={form.endDate}
             onChange={handleChange("endDate")}
-            type="date"
+            type="datetime-local"
             required
           />
         </Grid>
@@ -122,7 +294,7 @@ const EditOrganizations = () => {
           borderRadius: "12px",
         }}
       >
-        Save Changes
+        Update Campaign
       </Button>
     </Card>
   );

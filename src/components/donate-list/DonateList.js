@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Card,
@@ -17,72 +17,13 @@ import solanaIcon from "../../assets/icons/logo/solana.png";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { getCampaign } from "@/store/campaign/campaignSlice";
+import { useDispatch } from "react-redux";
 
-const donations = [
-  {
-    id: 1,
-    logo: solanaIcon,
-    name: "Clean Water Project",
-    organization: "Water for All Foundation",
-    location: "Kenya",
-    date: "30 Apr 2025",
-    goal: 10000,
-    raised: 4500,
-    tags: ["Environment", "Urgent"],
-    verify: true,
-  },
-  {
-    id: 2,
-    logo: solanaIcon,
-    name: "Education for Refugees",
-    organization: "Hope Initiative",
-    location: "Turkey",
-    date: "29 Apr 2025",
-    goal: 20000,
-    raised: 15000,
-    tags: ["Education"],
-    verify: false,
-  },
-  {
-    id: 3,
-    logo: solanaIcon,
-    name: "Emergency Earthquake Relief",
-    organization: "Global Help",
-    location: "Afghanistan",
-    date: "28 Apr 2025",
-    goal: 50000,
-    raised: 50000,
-    tags: ["Disaster", "Urgent"],
-    verify: true,
-  },
-  {
-    id: 4,
-    logo: solanaIcon,
-    name: "Wildlife Conservation",
-    organization: "Nature's Guardians",
-    location: "Brazil",
-    date: "27 Apr 2025",
-    goal: 30000,
-    raised: 20000,
-    tags: ["Environment"],
-    verify: false,
-  },
-  {
-    id: 5,
-    logo: solanaIcon,
-    name: "Food Security Initiative",
-    organization: "Feed the World",
-    location: "India",
-    date: "26 Apr 2025",
-    goal: 25000,
-    raised: 10000,
-    tags: ["Food", "Urgent"],
-    verify: true,
-  },
-];
-
-const DonateList = () => {
+const DonateList = ({ donations = [] }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   const getProgressGradient = (progress) => {
     if (progress < 25) return "linear-gradient(to right, red, red)";
@@ -106,8 +47,6 @@ const DonateList = () => {
       </style>
       <Grid container spacing={3}>
         {donations.map((item) => {
-          const progress = (item.raised / item.goal) * 100;
-
           return (
             <Grid item xs={12} sm={6} md={4} key={item.id}>
               <Card
@@ -128,12 +67,39 @@ const DonateList = () => {
                 onClick={() => router.push(`/donates/${item.id}`)}
               >
                 <CardContent>
-                  <Box display="flex" flexDirection="column" width="100%">
-                    <Avatar
-                      src={item.logo.src}
-                      alt={item.organization}
-                      sx={{ width: 56, height: 56, mb: 1 }}
-                    />
+                  <Box display="flex" flexDirection="column">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <img
+                        src={`/api/${item.imagePath}`}
+                        alt={item.title}
+                      
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          maxHeight: "150px",
+                          marginBottom: "16px",
+                        }}
+                      />
+                   
+                    </Box>
+                    <Box
+                        sx={{
+                          width: "100%",
+                          height: "1px",
+                          backgroundColor: theme.palette.secondary.light,
+                          marginBottom: "16px",
+                        }}
+                      />
                     <Box
                       sx={{
                         display: "flex",
@@ -152,8 +118,8 @@ const DonateList = () => {
                           gap: 0.5,
                         }}
                       >
-                        {item.name}
-                        {item.verify && (
+                        {item.title}
+                        {item.isVerified && (
                           <VerifiedIcon
                             fontSize="medium"
                             sx={{ mr: 0.5, color: theme.palette.primary.dark }}
@@ -167,7 +133,7 @@ const DonateList = () => {
                         fontSize={16}
                         sx={{ cursor: "pointer" }}
                       >
-                        {item.organization}
+                        {item.description}
                       </Typography>
                       <Typography
                         variant="body2"
@@ -181,7 +147,7 @@ const DonateList = () => {
                         }}
                       >
                         <LocationOnIcon fontSize="small" sx={{ mr: 0.5 }} />
-                        {item.location}
+                        Turkey
                       </Typography>
                     </Box>
                   </Box>
@@ -195,7 +161,7 @@ const DonateList = () => {
                       fontSize: "14px",
                     }}
                   >
-                    Posted: {item.date}
+                    Posted: {new Date(item.startDate).toLocaleDateString()}
                   </Typography>
 
                   <Box
@@ -207,28 +173,30 @@ const DonateList = () => {
                       width: "100%",
                     }}
                   />
-
-                  <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
-                    {item.tags.map((tag) => (
-                      <Chip
-                        key={tag}
-                        label={tag}
-                        variant="outlined"
-                        color={
-                          tag.toLowerCase() === "urgent" ? "error" : "info"
-                        }
-                        size="small"
-                        sx={
-                          tag.toLowerCase() === "urgent"
-                            ? {
-                                animation: "pulse 1s infinite",
-                                borderColor: theme.palette.error.main,
-                              }
-                            : {}
-                        }
-                      />
-                    ))}
-                  </Stack>
+                  {item.categories.categories &&
+                  item.categories.categories.length > 0 ? (
+                    <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
+                      {item?.categories?.categories.map((tag) => (
+                        <Chip
+                          key={tag}
+                          label={tag}
+                          variant="outlined"
+                          color="info"
+                          size="small"
+                        />
+                      ))}
+                    </Stack>
+                  ) : null}
+                  <Chip
+                    key={item.status}
+                    label={
+                      item.status.charAt(0).toUpperCase() +
+                      item.status.slice(1).toLowerCase()
+                    }
+                    variant="outlined"
+                    color={item.status === "urgent" ? "error" : "info"}
+                    size="small"
+                  />
 
                   <Box mt={2}>
                     <Typography
@@ -236,12 +204,15 @@ const DonateList = () => {
                       fontWeight={500}
                       color={theme.palette.secondary.dark}
                     >
-                      Raised: ${item.raised.toLocaleString()} / $
-                      {item.goal.toLocaleString()}
+                      Raised: ${item.raisedAmount} / ${item.targetAmount}
                     </Typography>
                     <LinearProgress
                       variant="determinate"
-                      value={progress}
+                      value={
+                        (Number(item.raisedAmount) /
+                          Number(item.targetAmount)) *
+                        100
+                      }
                       sx={{
                         height: 10,
                         borderRadius: 5,
@@ -249,7 +220,11 @@ const DonateList = () => {
                         backgroundColor: theme.palette.grey[300],
                         "& .MuiLinearProgress-bar": {
                           borderRadius: 5,
-                          backgroundImage: getProgressGradient(progress),
+                          backgroundImage: getProgressGradient(
+                            (Number(item.raisedAmount) /
+                              Number(item.targetAmount)) *
+                              100
+                          ),
                         },
                       }}
                     />

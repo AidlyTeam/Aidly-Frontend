@@ -18,21 +18,8 @@ import AvatarGroup from "@mui/material/AvatarGroup";
 import DonatePopup from "../popup/DonatePopup";
 import { useState } from "react";
 
-const DonateDetailPagesCard = () => {
-  const donateDetails = {
-    id: 1,
-    logo: "https://example.com/logo.png",
-    name: "Clean Water Project",
-    organization: "Water for All Foundation",
-    location: "Kenya",
-    date: "30 Apr 2025",
-    goal: 10000,
-    raised: 4500,
-    tags: ["Environment", "Urgent"],
-    verify: true,
-    description:
-      "This project aims to provide clean drinking water to communities in need in Kenya. We are working to install water purification systems and educate the community about hygiene practices.",
-  };
+const DonateDetailPagesCard = ({donateDetails = []}) => {
+  
 
   const progress = (donateDetails.raised / donateDetails.goal) * 100;
 
@@ -76,17 +63,9 @@ const DonateDetailPagesCard = () => {
                   gap: 1,
                 }}
               >
-                {/* <Typography
-                  variant="body2"
-                  color="primary.dark"
-                  fontWeight={500}
-                  fontSize={16}
-                  sx={{ cursor: "pointer" }}
-                >
-                  {donateDetails.organization}
-                </Typography> */}
+               
                 <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
-                  {donateDetails.tags.map((tag) => (
+                  {donateDetails?.categories?.categories?.map((tag) => (
                     <Chip
                       key={tag}
                       label={tag}
@@ -116,8 +95,8 @@ const DonateDetailPagesCard = () => {
                     gap: 0.5,
                   }}
                 >
-                  {donateDetails.name}
-                  {donateDetails.verify && (
+                  {donateDetails.title}
+                  {donateDetails.isVerified && (
                     <VerifiedIcon
                       fontSize="medium"
                       sx={{ mr: 0.5, color: theme.palette.primary.dark }}
@@ -148,7 +127,7 @@ const DonateDetailPagesCard = () => {
                   sx={{ display: "flex", alignItems: "center" }}
                 >
                   <LocationOnIcon fontSize="small" sx={{ mr: 0.5 }} />
-                  {donateDetails.location}
+                  Turkey
                 </Typography>
               </Box>
             </Box>
@@ -162,7 +141,7 @@ const DonateDetailPagesCard = () => {
                 fontSize: "14px",
               }}
             >
-              Posted: {donateDetails.date}
+              Posted: {new Date(donateDetails.startDate).toLocaleDateString()}
             </Typography>
 
             <Box
@@ -208,8 +187,7 @@ const DonateDetailPagesCard = () => {
                 fontWeight={500}
                 color={theme.palette.secondary.dark}
               >
-                Raised: ${donateDetails.raised.toLocaleString()} / $
-                {donateDetails.goal.toLocaleString()}
+                Raised: ${donateDetails.raisedAmount} / ${donateDetails.targetAmount}
               </Typography>
               <LinearProgress
                 variant="determinate"
@@ -221,7 +199,9 @@ const DonateDetailPagesCard = () => {
                   backgroundColor: theme.palette.grey[300],
                   "& .MuiLinearProgress-bar": {
                     borderRadius: 5,
-                    backgroundImage: getProgressGradient(progress),
+                    backgroundImage: getProgressGradient(
+                      (Number(donateDetails.raisedAmount) / Number(donateDetails.targetAmount)) * 100
+                    ),
                   },
                 }}
               />

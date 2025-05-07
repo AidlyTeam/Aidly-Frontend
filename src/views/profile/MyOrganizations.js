@@ -9,35 +9,50 @@ import {
   Box,
   Fade,
   LinearProgress,
+  Pagination,
+  IconButton,
 } from "@mui/material";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import BlurOnIcon from "@mui/icons-material/BlurOn";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { theme } from "@/configs/theme";
 import { useRouter } from "next/router";
-
-const dummyCampaigns = [
-  {
-    id: 1,
-    title: "Web3 for All",
-    description: "A campaign to educate people about Web3.",
-    collected: 5.0,
-    target: 10.0,
-  },
-  {
-    id: 2,
-    title: "Decentralized Future",
-    description: "Funding for decentralized applications.",
-    collected: 3.5,
-    target: 8.0,
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { getCampaign, deleteCampaign } from "@/store/campaign/campaignSlice";
 
 const MyOrganizations = () => {
-  const [campaigns, setCampaigns] = useState([]);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  const { campaign: campaignSlice } = useSelector((state) => state);
+  const campaigns = campaignSlice?.data?.data || [];
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  const userId = userData.id;
+
+  const fetchCampaigns = () => {
+    dispatch(
+      getCampaign({
+        userID: userId,
+        page: page.toString(),
+        limit: limit.toString(),
+      })
+    );
+  };
 
   useEffect(() => {
-    setCampaigns(dummyCampaigns);
-  }, []);
+    fetchCampaigns();
+  }, [dispatch, page, userId]);
+
+  const handleDelete = async (campaignId) => {
+    try {
+      const response = await dispatch(deleteCampaign(campaignId));
+      fetchCampaigns();
+    } catch (error) {
+      console.error("Error deleting campaign:", error);
+    }
+  };
 
   const getProgressGradient = (progress) => {
     if (progress < 25) return "linear-gradient(to right, red, red)";
@@ -46,7 +61,9 @@ const MyOrganizations = () => {
     return "linear-gradient(to right, yellow, green)";
   };
 
-  const router = useRouter();
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
 
   return (
     <Box>
@@ -92,9 +109,9 @@ const MyOrganizations = () => {
           </Box>
         </Fade>
       ) : (
-        <Grid container spacing={3}>
-          <Grid item xs={12} display="flex" justifyContent="space-between">
-         
+        <>
+          <Grid container spacing={3}>
+            <Grid item xs={12} display="flex" justifyContent="space-between">
               <Typography variant="h3" color="secondary.dark">
                 My Campaigns
               </Typography>
@@ -114,91 +131,119 @@ const MyOrganizations = () => {
               >
                 Create a Campaign
               </Button>
-            
-          </Grid>
-          {campaigns.map((campaign) => (
-            <Grid item xs={12} sm={6} md={4} key={campaign.id}>
-              <Card
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  borderRadius: 3,
-                  boxShadow: "0 0 15px rgba(0,255,163,0.3)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  color: "#fff",
-                  transition: "transform 0.3s ease, background 0.4s ease",
-                  "&:hover": {
-                    transform: "scale(1.02)",
-                    boxShadow: "0 0 25px rgba(99,241,249,0.5)",
-                  },
-                }}
-              >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography
-                    variant="h6"
-                    color="secondary.dark"
-                    fontWeight="bold"
-                  >
-                    {campaign.title}
-                  </Typography>
-                  <Typography variant="body2" color="gray" mt={1}>
-                    {campaign.description}
-                  </Typography>
-                </CardContent>
-                <Box
-                  sx={{
-                    mt: 2,
-                    px: 2,
-                    py: 1,
-                  }}
-                >
-                  <Typography variant="body2" color="secondary.dark">
-                    <strong>
-                      {campaign.collected} SOL / {campaign.target} SOL{" "}
-                    </strong>
-                  </Typography>
-                  <LinearProgress
-                    variant="determinate"
-                    value={(campaign.collected / campaign.target) * 100}
-                    sx={{
-                      height: 10,
-                      borderRadius: 5,
-                      mt: 0.5,
-                      backgroundColor: theme.palette.grey[300],
-                      "& .MuiLinearProgress-bar": {
-                        borderRadius: 5,
-                        backgroundImage: getProgressGradient(
-                          (campaign.collected / campaign.target) * 100
-                        ),
-                      },
-                    }}
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    p: 2,
-                  }}
-                >
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() =>
-                      router.push(
-                        `/profile/my-organizations/edit/${campaign.id}`
-                      )
-                    }
-                  >
-                    Edit
-                  </Button>
-                </Box>
-              </Card>
             </Grid>
-          ))}
-        </Grid>
+            {campaigns.map((campaign) => (
+              <Grid item xs={12} sm={6} md={4} key={campaign.id}>
+                <Card
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: 3,
+                    boxShadow: "0 0 15px rgba(0,255,163,0.3)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    color: "#fff",
+                    transition: "transform 0.3s ease, background 0.4s ease",
+                    "&:hover": {
+                      transform: "scale(1.02)",
+                      boxShadow: "0 0 25px rgba(99,241,249,0.5)",
+                    },
+                  }}
+                >
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="flex-start"
+                    >
+                      <Typography
+                        variant="h6"
+                        color="secondary.dark"
+                        fontWeight="bold"
+                      >
+                        {campaign.title}
+                      </Typography>
+                      <IconButton
+                        onClick={() => handleDelete(campaign.id)}
+                        sx={{
+                          color: "error.main",
+                          "&:hover": {
+                            backgroundColor: "rgba(211, 47, 47, 0.1)",
+                          },
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                    <Typography variant="body2" color="gray" mt={1}>
+                      {campaign.description}
+                    </Typography>
+                    <Box mt={2}>
+                      <Typography
+                        variant="body2"
+                        fontWeight={500}
+                        color={theme.palette.secondary.dark}
+                      >
+                        Raised: ${campaign.raisedAmount} / $
+                        {campaign.targetAmount}
+                      </Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          (Number(campaign.raisedAmount) /
+                            Number(campaign.targetAmount)) *
+                          100
+                        }
+                        sx={{
+                          height: 10,
+                          borderRadius: 5,
+                          mt: 0.5,
+                          backgroundColor: theme.palette.grey[300],
+                          "& .MuiLinearProgress-bar": {
+                            borderRadius: 5,
+                            backgroundImage: getProgressGradient(
+                              (Number(campaign.raisedAmount) /
+                                Number(campaign.targetAmount)) *
+                                100
+                            ),
+                          },
+                        }}
+                      />
+                    </Box>
+                  </CardContent>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      p: 2,
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() =>
+                        router.push(
+                          `/profile/my-organizations/edit/${campaign.id}`
+                        )
+                      }
+                      sx={{
+                        borderColor: "secondary.main",
+                        color: "secondary.main",
+                        "&:hover": {
+                          borderColor: "secondary.dark",
+                          backgroundColor: "rgba(99, 241, 249, 0.1)",
+                        },
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </Box>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </>
       )}
     </Box>
   );

@@ -15,7 +15,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import CategoryIcon from "@mui/icons-material/Category";
 import SyncProblemIcon from '@mui/icons-material/SyncProblem';
 
-
 const FilterBar = ({
   searchText,
   setSearchText,
@@ -118,18 +117,20 @@ const FilterBar = ({
                   <em style={placeholderStyle}>Categories</em>
                 ) : (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                    {selected.map((tag) => (
-                      <Chip key={tag} label={tag} size="small"  color="primary"/>
-                    ))}
+                    {selected.map((id) => {
+                      const tag = tagOptions.find((t) => t.id === id);
+                      return (
+                        <Chip key={id} label={tag?.name || id} size="small" color="primary" />
+                      );
+                    })}
                   </Box>
                 )
               }
             >
               {tagOptions.map((tag) => (
-                <MenuItem key={tag} value={tag}>
-                  <Checkbox checked={selectedTags.includes(tag)} />
-                  <ListItemText primary={tag}
-                  />
+                <MenuItem key={tag.id} value={tag.id}>
+                  <Checkbox checked={selectedTags.includes(tag.id)} />
+                  <ListItemText primary={tag.name} />
                 </MenuItem>
               ))}
             </Select>
