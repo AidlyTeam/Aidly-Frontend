@@ -1,11 +1,9 @@
-import { Box, Button, Card, CardContent } from "@mui/material";
+import { Box, Card, CardContent } from "@mui/material";
 import NavigationList from "./navigation";
 import Image from "next/image";
 import logo from "../../assets/logo/Adsız tasarım.png";
-import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
-  const { logout } = useAuth();
   return (
     <Card
       sx={{
@@ -47,18 +45,7 @@ const Navbar = () => {
             objectFit: "contain",
           }}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={logout}
-          sx={{
-            width: "100%",
-            borderRadius: "8px",
-            padding: "10px 0",
-          }}
-        >
-          Logout
-        </Button>
+    
       </Box>
     </Card>
   );

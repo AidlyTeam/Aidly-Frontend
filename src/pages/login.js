@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { Button, Typography, Container, Box } from "@mui/material";
@@ -7,48 +7,61 @@ import logo from "../assets/logo/Adsız tasarım.png";
 import { postAuth } from "@/store/auth/authSlice";
 import { useDispatch } from "react-redux";
 import bs58 from 'bs58';
+import UpdateProfile from "@/components/popup/UpdateProfile";
 
 const Login = () => {
   const { setUser } = useContext(AuthContext);
   const router = useRouter();
   const dispatch = useDispatch();
+  const [showUpdateProfile, setShowUpdateProfile] = useState(false);
+  const [userData, setUserData] = useState(null);
 
- 
-const connectPhantom = async () => {
-  if (!window.solana?.isPhantom) {
-    alert("Phantom Wallet bulunamadı. Lütfen Phantom eklentisini kurun.");
-    return;
-  }
+  const connectPhantom = async () => {
+    if (!window.solana?.isPhantom) {
+      alert("Phantom wallet not found. Please install the Phantom extension.");
+      return;
+    }
 
-  try {
-    const resp = await window.solana.connect();
-    const walletAddress = resp.publicKey.toString();
-    const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
-    const encodedMessage = new TextEncoder().encode(message);
-    const signed = await window.solana.signMessage(encodedMessage, "utf8");
+    try {
+      const resp = await window.solana.connect();
+      const walletAddress = resp.publicKey.toString();
+      const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
+      const encodedMessage = new TextEncoder().encode(message);
+      const signed = await window.solana.signMessage(encodedMessage, "utf8");
 
-    const signatureBase58 = bs58.encode(signed.signature);
+      const signatureBase58 = bs58.encode(signed.signature);
 
-    const payload = {
-      message,
-      signatureBase58,
-      walletAddress,
-    };
+      const payload = {
+        message,
+        signatureBase58,
+        walletAddress,
+      };
+      console.log("Payload:", payload);
+      const result = await dispatch(postAuth(payload)).unwrap();
 
-    const result = await dispatch(postAuth(payload)).unwrap();
+      const user = {
+        ...result,
+        role: "user",
+      };
+      
+      localStorage.setItem("userData", JSON.stringify(user));
+      setUser(user);
+      setUserData(result.data);
+      
+      if (result.data?.role === "first") {
+        setShowUpdateProfile(true);
+      } else {
+        router.push("/home");
+      }
+    } catch (err) {
+      console.error("Phantom connection error:", err);
+    }
+  };
 
-    const user = {
-      ...result,
-      role: "user",
-    };
-
-    localStorage.setItem("userData", JSON.stringify(user));
-    setUser(user);
-    router.push("/");
-  } catch (err) {
-    console.error("Phantom bağlantı hatası:", err);
-  }
-};
+  const handleProfileUpdate = () => {
+    setShowUpdateProfile(false);
+    router.push("/home");
+  };
 
   return (
     <Box
@@ -128,6 +141,12 @@ const connectPhantom = async () => {
           Connect Phantom
         </Button>
       </Container>
+
+      <UpdateProfile 
+        open={showUpdateProfile} 
+        onClose={handleProfileUpdate} 
+        isDefault={false}
+      />
     </Box>
   );
 };
