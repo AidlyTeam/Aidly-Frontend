@@ -4,7 +4,7 @@ import PersonalInfoForm from '@/components/profile/PersonakInfoForm';
 import PasswordChangeForm from '@/components/profile/PasswordChangeForm';
 import { getUserInfo } from '@/store/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
-
+import BadgeList from '@/components/badge-list/BadgeList';
 
 const ProfileInfo = () => {
   const dispatch = useDispatch();
@@ -15,8 +15,9 @@ const ProfileInfo = () => {
 
   const { user: userSlice } = useSelector((state) => state);
 
-  console.log(userSlice);
-  const userData = userSlice.data.data
+  const userData = userSlice?.data?.data
+
+  console.log(userData);
 
   return (
     <Box >
@@ -25,7 +26,7 @@ const ProfileInfo = () => {
         
         <Divider sx={{ my: 4 }} />
         
-        {/* <PasswordChangeForm /> */}
+        <BadgeList badges={userData?.badges?.badges} />
       </Paper>
     </Box>
   );

@@ -67,13 +67,13 @@ const DonateDetailPagesCard = ({donateDetails = []}) => {
                 <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
                   {donateDetails?.categories?.categories?.map((tag) => (
                     <Chip
-                      key={tag}
-                      label={tag}
+                      key={tag.id}
+                      label={tag.name}
                       variant="outlined"
-                      color={tag.toLowerCase() === "urgent" ? "error" : "info"}
+                      color={tag.name.toLowerCase() === "urgent" ? "error" : "info"}
                       size="small"
                       sx={
-                        tag.toLowerCase() === "urgent"
+                        tag.name.toLowerCase() === "urgent"
                           ? {
                               animation: "pulse 1s infinite",
                               borderColor: theme.palette.error.main,

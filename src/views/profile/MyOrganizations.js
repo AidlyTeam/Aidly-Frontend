@@ -11,10 +11,13 @@ import {
   LinearProgress,
   Pagination,
   IconButton,
+  Chip,
+  Divider,
 } from "@mui/material";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import BlurOnIcon from "@mui/icons-material/BlurOn";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import { theme } from "@/configs/theme";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +30,10 @@ const MyOrganizations = () => {
   const limit = 10;
 
   const { campaign: campaignSlice } = useSelector((state) => state);
-  const campaigns = campaignSlice?.data?.data || [];
+  console.log("Campaign Slice:", campaignSlice);
+  const campaigns = Array.isArray(campaignSlice?.data?.data)
+    ? campaignSlice.data.data
+    : [];
   const userData = JSON.parse(localStorage.getItem("userData") || "{}");
   const userId = userData.id;
 
@@ -178,7 +184,35 @@ const MyOrganizations = () => {
                     <Typography variant="body2" color="gray" mt={1}>
                       {campaign.description}
                     </Typography>
-                    <Box mt={2}>
+
+                    {/* Categories Section */}
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mt={1}
+                      mb={1}
+                    >
+                      <Box display="flex" flexWrap="wrap" gap={1}>
+                        {campaign.categories?.categories?.map((category) => (
+                          <Chip
+                            key={category.id}
+                            label={category.name}
+                            size="small"
+                            sx={{
+                              backgroundColor: "rgba(99, 241, 249, 0.1)",
+                              color: "secondary.main",
+                              border: "1px solid",
+                              borderColor: "secondary.main",
+                            }}
+                          />
+                        ))}
+                      </Box>
+                    </Box>
+
+                    <Divider sx={{ my: 2 }} />
+
+                    <Box>
                       <Typography
                         variant="body2"
                         fontWeight={500}
@@ -219,25 +253,48 @@ const MyOrganizations = () => {
                       p: 2,
                     }}
                   >
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() =>
-                        router.push(
-                          `/profile/my-organizations/edit/${campaign.id}`
-                        )
-                      }
-                      sx={{
-                        borderColor: "secondary.main",
-                        color: "secondary.main",
-                        "&:hover": {
-                          borderColor: "secondary.dark",
-                          backgroundColor: "rgba(99, 241, 249, 0.1)",
-                        },
-                      }}
-                    >
-                      Edit
-                    </Button>
+                    <Box>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() =>
+                          router.push(
+                            `/profile/my-organizations/edit/${campaign.id}`
+                          )
+                        }
+                        sx={{
+                          borderColor: "secondary.main",
+                          color: "secondary.main",
+                          "&:hover": {
+                            borderColor: "secondary.dark",
+                            backgroundColor: "rgba(99, 241, 249, 0.1)",
+                          },
+                          mr: 1,
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<AddIcon />}
+                        onClick={() =>
+                          router.push(
+                            `/profile/my-organizations/categories/${campaign.id}`
+                          )
+                        }
+                        sx={{
+                          borderColor: "secondary.main",
+                          color: "secondary.main",
+                          "&:hover": {
+                            borderColor: "secondary.dark",
+                            backgroundColor: "rgba(99, 241, 249, 0.1)",
+                          },
+                        }}
+                      >
+                        Categories
+                      </Button>
+                    </Box>
                   </Box>
                 </Card>
               </Grid>

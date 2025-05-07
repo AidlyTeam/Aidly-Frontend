@@ -11,22 +11,21 @@ const initialState = {
 
 export const getCampaign = createAsyncThunk(
   "campaign/getCampaign",
-  async (data, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
       const response = await axios({
         method: "GET",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/private/campaign`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/private/campaign?${params}`,
         headers: {
           "Content-Type": "application/json",
         },
-        data: JSON.stringify(data),
       });
      
       if (response.status === 200) {
         return response.data;
       }
-    } catch (response) {
-      return rejectWithValue(response.message || error.message);
+    } catch (error) {
+      return rejectWithValue(error.message || error.message);
     }
   }
 );

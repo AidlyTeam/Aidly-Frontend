@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Grid, Typography, Button } from "@mui/material";
 import EditedText from "../EditedText/EditedText";
 import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
@@ -7,8 +7,8 @@ import { useDispatch } from "react-redux";
 
 const PersonalInfoForm = ({ initialData = {} }) => {
   const [formData, setFormData] = useState({
-    name: initialData.name || "",
-    surname: initialData.surname || "",
+    name: initialData?.name ,
+    surname: initialData?.surname,
   });
   const dispatch = useDispatch();
 
@@ -20,6 +20,13 @@ const PersonalInfoForm = ({ initialData = {} }) => {
     e.preventDefault();
     dispatch(updateProfile(formData));  
   };
+
+  useEffect(() => {
+    setFormData({
+      name: initialData?.name,
+      surname: initialData?.surname,
+    });
+  }, [initialData]);
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mb: 6 }}>

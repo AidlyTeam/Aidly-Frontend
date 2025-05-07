@@ -10,10 +10,12 @@ import {
   ListItemText,
   Chip,
   Box,
+  Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CategoryIcon from "@mui/icons-material/Category";
 import SyncProblemIcon from '@mui/icons-material/SyncProblem';
+import { theme } from "@/configs/theme";
 
 const FilterBar = ({
   searchText,
@@ -47,7 +49,7 @@ const FilterBar = ({
           <TextField
             variant="standard"
             fullWidth
-            placeholder="Job title, keywords..."
+            placeholder="Search campaigns..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             InputProps={{
@@ -117,20 +119,39 @@ const FilterBar = ({
                   <em style={placeholderStyle}>Categories</em>
                 ) : (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                    {selected.map((id) => {
-                      const tag = tagOptions.find((t) => t.id === id);
-                      return (
-                        <Chip key={id} label={tag?.name || id} size="small" color="primary" />
-                      );
-                    })}
+                    {selected.map((tag) => (
+                      <Chip
+                        key={tag.id}
+                        label={tag.name}
+                        size="small"
+                        sx={{
+                          backgroundColor: "rgba(99, 241, 249, 0.1)",
+                          border: "1px solid rgba(99, 241, 249, 0.3)",
+                        }}
+                      />
+                    ))}
                   </Box>
                 )
               }
             >
               {tagOptions.map((tag) => (
-                <MenuItem key={tag.id} value={tag.id}>
-                  <Checkbox checked={selectedTags.includes(tag.id)} />
-                  <ListItemText primary={tag.name} />
+                <MenuItem key={tag.id} value={tag}>
+                  <Checkbox 
+                    checked={selectedTags.some(selectedTag => selectedTag.id === tag.id)}
+                    sx={{
+                      color: "#63f1f9",
+                      "&.Mui-checked": {
+                        color: "#63f1f9",
+                      },
+                    }}
+                  />
+                  <ListItemText 
+                    primary={
+                      <Typography sx={{  }}>
+                        {tag.name}
+                      </Typography>
+                    } 
+                  />
                 </MenuItem>
               ))}
             </Select>

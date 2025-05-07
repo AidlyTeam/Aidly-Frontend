@@ -178,8 +178,8 @@ const DonateList = ({ donations = [] }) => {
                     <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
                       {item?.categories?.categories.map((tag) => (
                         <Chip
-                          key={tag}
-                          label={tag}
+                          key={tag.id}
+                          label={tag.name}
                           variant="outlined"
                           color="info"
                           size="small"
@@ -196,6 +196,9 @@ const DonateList = ({ donations = [] }) => {
                     variant="outlined"
                     color={item.status === "urgent" ? "error" : "info"}
                     size="small"
+                    sx={{
+                      marginTop: "16px",
+                    }}
                   />
 
                   <Box mt={2}>
