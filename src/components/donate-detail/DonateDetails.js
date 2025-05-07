@@ -40,6 +40,7 @@ const DonateDetailPagesCard = ({donateDetails = []}) => {
   };
 
 
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={12} md={12} key={donateDetails.id}>
@@ -187,7 +188,7 @@ const DonateDetailPagesCard = ({donateDetails = []}) => {
                 fontWeight={500}
                 color={theme.palette.secondary.dark}
               >
-                Raised: ${donateDetails.raisedAmount} / ${donateDetails.targetAmount}
+                Raised: {donateDetails.raisedAmount} / {donateDetails.targetAmount} SOL
               </Typography>
               <LinearProgress
                 variant="determinate"
@@ -267,6 +268,7 @@ const DonateDetailPagesCard = ({donateDetails = []}) => {
         open={open}
         onClose={handleClose}
         organization={donateDetails.name}
+        walletAddress={donateDetails.walletAddress}
       />
     </Grid>
   );

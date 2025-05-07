@@ -218,8 +218,7 @@ const MyOrganizations = () => {
                         fontWeight={500}
                         color={theme.palette.secondary.dark}
                       >
-                        Raised: ${campaign.raisedAmount} / $
-                        {campaign.targetAmount}
+                        Raised: {campaign.raisedAmount} / {campaign.targetAmount} SOL
                       </Typography>
                       <LinearProgress
                         variant="determinate"

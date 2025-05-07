@@ -213,8 +213,7 @@ const DonateDetailAdminPagesCard = () => {
                 fontWeight={500}
                 color={theme.palette.secondary.dark}
               >
-                Raised: ${donateDetails.raised.toLocaleString()} / $
-                {donateDetails.goal.toLocaleString()}
+                Raised: {donateDetails.raised.toLocaleString()} / {donateDetails.goal.toLocaleString()} SOL
               </Typography>
               <LinearProgress
                 variant="determinate"

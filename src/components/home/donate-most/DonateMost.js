@@ -191,7 +191,7 @@ const DonateMost = ({ donations = [], loading = false }) => {
                       fontWeight={500}
                       color={theme.palette.secondary.dark}
                     >
-                      Raised: ${item.raisedAmount} / ${item.targetAmount}
+                      Raised: ${item.raisedAmount} / ${item.targetAmount} SOL
                     </Typography>
                     <LinearProgress
                       variant="determinate"

@@ -1,5 +1,4 @@
-"use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -16,25 +15,85 @@ import {
 import { theme } from "@/configs/theme";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import {
+  Connection,
+  PublicKey,
+  Transaction,
+  SystemProgram,
+} from "@solana/web3.js";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserInfo } from "@/store/user/userSlice";
+import { showToast } from "@/utils/showToast";
 
-const DonatePopup = ({ open, onClose }) => {
+const DonatePopup = ({ open, onClose, walletAddress }) => {
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [customAmount, setCustomAmount] = useState("");
   const [agree, setAgree] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
+  const donateDetails = walletAddress;
+  
+  useEffect(() => {
+    dispatch(getUserInfo());
+  }, [dispatch]);
 
-  const handleDonate = () => {
-    const amountToDonate = customAmount || selectedAmount;
+  const { user: userSlice } = useSelector((state) => state);
+  const userData = userSlice?.data?.data;
 
-    
+  const handleDonate = async () => {
+    const amountToDonate = parseFloat(customAmount || selectedAmount);
 
-    console.log("Bağış yapılıyor:", amountToDonate, "SOL")
+    if (!userData?.walletAddress || !donateDetails) {
+      alert("Wallet address or donation target is missing.");
+      return;
+    }
+
+    try {
+      const fromPubkey = new PublicKey(userData.walletAddress);
+      const toPubkey = new PublicKey(donateDetails);
+
+      if (isNaN(amountToDonate) || amountToDonate <= 0) {
+        alert("Please enter a valid donation amount.");
+        return;
+      }
+
+      const lamports = amountToDonate * 1e9;
+
+      // ✅ Helius RPC Connection
+      const connection = new Connection(
+        "https://devnet.helius-rpc.com/?api-key=81edb2f6-ad3c-48a0-b8de-2792a9e6464b",
+        "confirmed"
+      );
+
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey,
+          toPubkey,
+          lamports,
+        })
+      );
+
+      transaction.feePayer = fromPubkey;
+
+      // ✅ Blockhash alma
+      const { blockhash } = await connection.getLatestBlockhash("confirmed");
+      transaction.recentBlockhash = blockhash;
+
+      const signed = await window.solana.signTransaction(transaction);
+      const signature = await connection.sendRawTransaction(signed.serialize());
+
+      await connection.confirmTransaction(signature, "confirmed");
+
+      router.push("/thankyou");
+    } catch (err) {
+      showToast("dissmis")
+      showToast("error", "Donation failed. Please try again.");
+    }
+
     onClose();
-    router.push("/thankyou");
-
   };
 
-  const predefinedAmounts = [1, 2, 3, 4];
+  const predefinedAmounts = [0.001, 0.005, 0.01, 0.05];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
