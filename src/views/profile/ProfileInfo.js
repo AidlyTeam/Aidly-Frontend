@@ -1,22 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Paper, Box, Divider } from '@mui/material';
 import PersonalInfoForm from '@/components/profile/PersonakInfoForm';
 import PasswordChangeForm from '@/components/profile/PasswordChangeForm';
+import { getUserInfo } from '@/store/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const ProfileInfo = () => {
-  const userData = {
-    firstName: 'Jayvion',
-    lastName: 'Simon',
-    email: 'nannie.abernethy70@yahoo.com',
-    phone: '365-374-4961',
-    birthday: 'DD/MM/YYYY',
-    gender: 'male',
-    street: '',
-    zipCode: '',
-    city: '',
-    country: '',
-  };
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserInfo());
+  }, [dispatch]);
+
+  const { user: userSlice } = useSelector((state) => state);
+
+  console.log(userSlice);
+  const userData = userSlice.data.data
 
   return (
     <Box >
@@ -25,7 +25,7 @@ const ProfileInfo = () => {
         
         <Divider sx={{ my: 4 }} />
         
-        <PasswordChangeForm />
+        {/* <PasswordChangeForm /> */}
       </Paper>
     </Box>
   );

@@ -2,25 +2,23 @@ import React, { useState } from "react";
 import { Box, Grid, Typography, Button } from "@mui/material";
 import EditedText from "../EditedText/EditedText";
 import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
+import { updateProfile } from "@/store/user/userSlice";
+import { useDispatch } from "react-redux";
+
 const PersonalInfoForm = ({ initialData = {} }) => {
   const [formData, setFormData] = useState({
-    firstName: initialData.firstName || "",
-    lastName: initialData.lastName || "",
-    email: initialData.email || "",
-    phone: initialData.phone || "",
+    name: initialData.name || "",
+    surname: initialData.surname || "",
   });
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Personal Info submitted:", formData);
+    dispatch(updateProfile(formData));  
   };
 
   return (
@@ -47,48 +45,36 @@ const PersonalInfoForm = ({ initialData = {} }) => {
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <EditedText
-            label="First name"
-            value={formData.firstName}
-            onChange={(e) =>
-              handleChange({
-                target: { name: "firstName", value: e.target.value },
-              })
-            }
+            label="Name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
             required
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <EditedText
-            label="Last name"
-            value={formData.lastName}
-            onChange={(e) =>
-              handleChange({
-                target: { name: "lastName", value: e.target.value },
-              })
-            }
-            required
-          />
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <EditedText
-            label="Email address"
-            type="email"
-            value={formData.email}
-            onChange={(e) =>
-              handleChange({ target: { name: "email", value: e.target.value } })
-            }
+            label="Surname"
+            name="surname"
+            value={formData.surname}
+            onChange={handleChange}
             required
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <EditedText
-            label="Phone number"
-            type="tel"
-            value={formData.phone}
-            onChange={(e) =>
-              handleChange({ target: { name: "phone", value: e.target.value } })
-            }
+            label="Role"
+            value={initialData.role || ""}
+            disabled
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <EditedText
+            label="Wallet Address"
+            value={initialData.walletAddress || ""}
+            disabled
+            fullWidth
           />
         </Grid>
       </Grid>

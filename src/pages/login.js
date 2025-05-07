@@ -41,7 +41,7 @@ const Login = () => {
 
       const user = {
         ...result,
-        role: "user",
+        role: result?.data?.role,
       };
       
       localStorage.setItem("userData", JSON.stringify(user));

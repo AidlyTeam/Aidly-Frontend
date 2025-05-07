@@ -25,6 +25,7 @@ const EditedText = ({
   info = null,
   error = null,
   errorText = null,
+  name,
 }) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -71,6 +72,7 @@ const EditedText = ({
         size="medium"
         error={Boolean(error)}
         helperText={error ? error : ""}
+        name={name}
         InputProps={{
           endAdornment: isPassword ? (
             <InputAdornment position="end">
