@@ -56,7 +56,7 @@ const CreateOrganizations = () => {
       const response = await dispatch(createCampaign(formData));
 
       if (response.statusCode) {
-        router.push('/profile/my-organizations');
+        router.push('/profile/my-campaigns');
       }
     } catch (error) {
       console.error('Error submitting form:', error);

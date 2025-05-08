@@ -70,7 +70,7 @@ const EditOrganizations = () => {
       const response = await dispatch(updateCampaign(data));
 
       if (response.statusCode) {
-        router.push('/profile/my-organizations');
+        router.push('/profile/my-campaigns');
       }
     } catch (error) {
       console.error('Error updating campaign:', error);

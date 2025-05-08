@@ -19,7 +19,7 @@ const OrganizationActions = ({ row }) => {
   return (
     <>
       <CustomTooltip title="View">
-        <IconButton onClick={() => router.push(`/admin/organization-list/${row.id}`)}>
+        <IconButton onClick={() => router.push(`/admin/campaigns-list/${row.id}`)}>
           <Visibility />
         </IconButton>
       </CustomTooltip>

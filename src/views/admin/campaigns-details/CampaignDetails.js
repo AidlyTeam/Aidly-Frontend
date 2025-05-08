@@ -2,7 +2,7 @@ import DonateDetailAdminPagesCard from '@/components/donate-detail/DonateDetails
 import { Box } from '@mui/material'
 import React from 'react'
 
-const OrganizaitonDetails = () => {
+const CampaignDetails = () => {
 
         
 
@@ -13,4 +13,4 @@ const OrganizaitonDetails = () => {
   )
 }
 
-export default OrganizaitonDetails
+export default CampaignDetails

@@ -96,13 +96,13 @@ const OrganizationList = () => {
     <Box>
       <Box>
         <Typography variant="h4" gutterBottom>
-          Organization List
+          Campaign List
         </Typography>
         <Typography variant="body1">
-          This is the user list page. You can manage organizations from here.
+          This is the campaign list page. You can manage campaigns from here.
         </Typography>
         <Typography variant="body1">
-          You can add, edit, delete and verifed organizations from this page.
+          You can add, edit, delete and verifed campaigns from this page.
         </Typography>
       </Box>
       <ClassicTable

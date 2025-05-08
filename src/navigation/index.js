@@ -37,7 +37,7 @@ const navigation = [
             },
             {
                 type: "item",
-                path: "/profile/my-organizations",
+                path: "/profile/my-campaigns",
                 title: "My Campaigns",
                 permission: "team-members",
                 icon: <PolylineIcon />,
@@ -66,8 +66,8 @@ const navigation = [
     },
     { // single item
         type: "item",
-        path: "/admin/organization-list",
-        title: "Organizations",
+        path: "/admin/campaigns-list",
+        title: "Campaigns",
         icon: <CorporateFareIcon />,
         permission: "admin",
     },

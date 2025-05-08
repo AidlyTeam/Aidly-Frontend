@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { getCampaign } from "@/store/campaign/campaignSlice";
 import { useDispatch } from "react-redux";
+import Image from "next/image";
 
 const DonateList = ({ donations = [] }) => {
   const theme = useTheme();
@@ -78,7 +79,6 @@ const DonateList = ({ donations = [] }) => {
                       <img
                         src={`/api/${item.imagePath}`}
                         alt={item.title}
-                      
                         style={{
                           display: "flex",
                           justifyContent: "center",
@@ -90,16 +90,15 @@ const DonateList = ({ donations = [] }) => {
                           marginBottom: "16px",
                         }}
                       />
-                   
                     </Box>
                     <Box
-                        sx={{
-                          width: "100%",
-                          height: "1px",
-                          backgroundColor: theme.palette.secondary.light,
-                          marginBottom: "16px",
-                        }}
-                      />
+                      sx={{
+                        width: "100%",
+                        height: "1px",
+                        backgroundColor: theme.palette.secondary.light,
+                        marginBottom: "16px",
+                      }}
+                    />
                     <Box
                       sx={{
                         display: "flex",
@@ -202,13 +201,27 @@ const DonateList = ({ donations = [] }) => {
                   />
 
                   <Box mt={2}>
-                    <Typography
-                      variant="body2"
-                      fontWeight={500}
-                      color={theme.palette.secondary.dark}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 1,
+                      }}
                     >
-                      Raised: {item.raisedAmount} / {item.targetAmount} SOL
-                    </Typography>
+                      <Typography
+                        variant="body2"
+                        fontWeight={500}
+                        color={theme.palette.secondary.dark}
+                      >
+                        Raised: {item.raisedAmount} / {item.targetAmount}
+                      </Typography>
+                      <Image
+                        src="/solana-sol-icon.svg"
+                        alt="Solana"
+                        width={24}
+                        height={24}
+                      />
+                    </Box>
+
                     <LinearProgress
                       variant="determinate"
                       value={

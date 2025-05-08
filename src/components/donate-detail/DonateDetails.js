@@ -17,10 +17,9 @@ import Avatar from "@mui/material/Avatar";
 import AvatarGroup from "@mui/material/AvatarGroup";
 import DonatePopup from "../popup/DonatePopup";
 import { useState } from "react";
+import Image from "next/image";
 
-const DonateDetailPagesCard = ({donateDetails = []}) => {
-  
-
+const DonateDetailPagesCard = ({ donateDetails = [] }) => {
   const progress = (donateDetails.raised / donateDetails.goal) * 100;
 
   const getProgressGradient = (progress) => {
@@ -34,12 +33,10 @@ const DonateDetailPagesCard = ({donateDetails = []}) => {
 
   const handleDonateClick = () => {
     setOpen(true);
-  }
+  };
   const handleClose = () => {
     setOpen(false);
   };
-
-
 
   return (
     <Grid container spacing={3}>
@@ -64,14 +61,15 @@ const DonateDetailPagesCard = ({donateDetails = []}) => {
                   gap: 1,
                 }}
               >
-               
                 <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
                   {donateDetails?.categories?.categories?.map((tag) => (
                     <Chip
                       key={tag.id}
                       label={tag.name}
                       variant="outlined"
-                      color={tag.name.toLowerCase() === "urgent" ? "error" : "info"}
+                      color={
+                        tag.name.toLowerCase() === "urgent" ? "error" : "info"
+                      }
                       size="small"
                       sx={
                         tag.name.toLowerCase() === "urgent"
@@ -183,13 +181,27 @@ const DonateDetailPagesCard = ({donateDetails = []}) => {
             </Box>
 
             <Box mt={2}>
-              <Typography
-                variant="body2"
-                fontWeight={500}
-                color={theme.palette.secondary.dark}
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                }}
               >
-                Raised: {donateDetails.raisedAmount} / {donateDetails.targetAmount} SOL
-              </Typography>
+                <Typography
+                  variant="body2"
+                  fontWeight={500}
+                  color={theme.palette.secondary.dark}
+                >
+                  Raised: {donateDetails.raisedAmount} /{" "}
+                  {donateDetails.targetAmount} 
+                </Typography>
+                <Image
+                  src="/solana-sol-icon.svg"
+                  alt="Solana"
+                  width={24}
+                  height={24}
+                />
+              </Box>
               <LinearProgress
                 variant="determinate"
                 value={progress}
@@ -201,7 +213,9 @@ const DonateDetailPagesCard = ({donateDetails = []}) => {
                   "& .MuiLinearProgress-bar": {
                     borderRadius: 5,
                     backgroundImage: getProgressGradient(
-                      (Number(donateDetails.raisedAmount) / Number(donateDetails.targetAmount)) * 100
+                      (Number(donateDetails.raisedAmount) /
+                        Number(donateDetails.targetAmount)) *
+                        100
                     ),
                   },
                 }}
@@ -220,8 +234,9 @@ const DonateDetailPagesCard = ({donateDetails = []}) => {
             }}
           >
             <Button
-              variant="contained"ü
-              onClick={handleDonateClick} 
+              variant="contained"
+              ü
+              onClick={handleDonateClick}
               sx={{
                 marginLeft: "auto",
                 marginRight: "0",

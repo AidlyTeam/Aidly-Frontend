@@ -85,7 +85,7 @@ const CampaignCategories = () => {
   };
 
   const handleSave = () => {
-    router.push('/profile/my-organizations');
+    router.push('/profile/my-campaigns');
   };
 
   return (

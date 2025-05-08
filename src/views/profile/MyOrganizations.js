@@ -22,6 +22,7 @@ import { theme } from "@/configs/theme";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { getCampaign, deleteCampaign } from "@/store/campaign/campaignSlice";
+import Image from "next/image";
 
 const MyOrganizations = () => {
   const dispatch = useDispatch();
@@ -98,7 +99,7 @@ const MyOrganizations = () => {
             <Button
               variant="contained"
               startIcon={<RocketLaunchIcon />}
-              onClick={() => router.push("/profile/my-organizations/create")}
+              onClick={() => router.push("/profile/my-campaigns/create")}
               sx={{
                 mt: 3,
                 background: "linear-gradient(to right, #63f1f9, #72F088)",
@@ -124,7 +125,7 @@ const MyOrganizations = () => {
               <Button
                 variant="contained"
                 startIcon={<RocketLaunchIcon />}
-                onClick={() => router.push("/profile/my-organizations/create")}
+                onClick={() => router.push("/profile/my-campaigns/create")}
                 sx={{
                   background: "linear-gradient(to right, #63f1f9, #72F088)",
                   color: "#000",
@@ -213,13 +214,29 @@ const MyOrganizations = () => {
                     <Divider sx={{ my: 2 }} />
 
                     <Box>
-                      <Typography
-                        variant="body2"
-                        fontWeight={500}
-                        color={theme.palette.secondary.dark}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 1,
+                          mb: 1,
+                        }}
                       >
-                        Raised: {campaign.raisedAmount} / {campaign.targetAmount} SOL
-                      </Typography>
+                        <Typography
+                          variant="body2"
+                          fontWeight={500}
+                          color={theme.palette.secondary.dark}
+                        >
+                          Raised: {campaign.raisedAmount} /{" "}
+                          {campaign.targetAmount}
+                        </Typography>
+
+                        <Image
+                          src="/solana-sol-icon.svg"
+                          alt="Solana"
+                          width={24}
+                          height={24}
+                        />
+                      </Box>
                       <LinearProgress
                         variant="determinate"
                         value={
@@ -258,7 +275,7 @@ const MyOrganizations = () => {
                         size="small"
                         onClick={() =>
                           router.push(
-                            `/profile/my-organizations/edit/${campaign.id}`
+                            `/profile/my-campaigns/edit/${campaign.id}`
                           )
                         }
                         sx={{
@@ -279,7 +296,7 @@ const MyOrganizations = () => {
                         startIcon={<AddIcon />}
                         onClick={() =>
                           router.push(
-                            `/profile/my-organizations/categories/${campaign.id}`
+                            `/profile/my-campaigns/categories/${campaign.id}`
                           )
                         }
                         sx={{

@@ -13,6 +13,7 @@ import {
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 const DonateMost = ({ donations = [], loading = false }) => {
   const theme = useTheme();
@@ -27,7 +28,7 @@ const DonateMost = ({ donations = [], loading = false }) => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <Typography>Loading...</Typography>
       </Box>
     );
@@ -46,7 +47,8 @@ const DonateMost = ({ donations = [], loading = false }) => {
       </style>
       <Grid container spacing={3}>
         {donations.map((item) => {
-          const progress = (Number(item.raisedAmount) / Number(item.targetAmount)) * 100;
+          const progress =
+            (Number(item.raisedAmount) / Number(item.targetAmount)) * 100;
           return (
             <Grid item xs={12} sm={6} md={4} key={item.id}>
               <Card
@@ -171,28 +173,43 @@ const DonateMost = ({ donations = [], loading = false }) => {
                     }}
                   />
 
-                  {item.categories?.categories && item.categories.categories.length > 0 && (
-                    <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
-                      {item.categories.categories.map((tag) => (
-                        <Chip
-                          key={tag.id}
-                          label={tag.name}
-                          variant="outlined"
-                          color="info"
-                          size="small"
-                        />
-                      ))}
-                    </Stack>
-                  )}
+                  {item.categories?.categories &&
+                    item.categories.categories.length > 0 && (
+                      <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
+                        {item.categories.categories.map((tag) => (
+                          <Chip
+                            key={tag.id}
+                            label={tag.name}
+                            variant="outlined"
+                            color="info"
+                            size="small"
+                          />
+                        ))}
+                      </Stack>
+                    )}
 
                   <Box mt={2}>
-                    <Typography
-                      variant="body2"
-                      fontWeight={500}
-                      color={theme.palette.secondary.dark}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 1,
+                        mb: 1,
+                      }}
                     >
-                      Raised: ${item.raisedAmount} / ${item.targetAmount} SOL
-                    </Typography>
+                      <Typography
+                        variant="body2"
+                        fontWeight={500}
+                        color={theme.palette.secondary.dark}
+                      >
+                        Raised: {item.raisedAmount} / {item.targetAmount}
+                      </Typography>
+                      <Image
+                        src="/solana-sol-icon.svg"
+                        alt="Solana"
+                        width={24}
+                        height={24}
+                      />
+                    </Box>
                     <LinearProgress
                       variant="determinate"
                       value={progress}
