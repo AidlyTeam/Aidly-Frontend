@@ -11,6 +11,7 @@ import {
   Stack,
   Typography,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import { theme } from "@/configs/theme";
 import Image from "next/image";
@@ -24,15 +25,17 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "@/store/user/userSlice";
 import { showToast } from "@/utils/showToast";
+import { createDonationForCampaign } from "@/store/donations/donationsSlice";
 
-const DonatePopup = ({ open, onClose, walletAddress }) => {
+const DonatePopup = ({ open, onClose, walletAddress, campaignId }) => {
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [customAmount, setCustomAmount] = useState("");
   const [agree, setAgree] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
   const donateDetails = walletAddress;
-  
+
   useEffect(() => {
     dispatch(getUserInfo());
   }, [dispatch]);
@@ -44,22 +47,27 @@ const DonatePopup = ({ open, onClose, walletAddress }) => {
     const amountToDonate = parseFloat(customAmount || selectedAmount);
 
     if (!userData?.walletAddress || !donateDetails) {
-      alert("Wallet address or donation target is missing.");
+      showToast("dismiss");
+      showToast("error", "Wallet address or donation target is missing.");
       return;
     }
 
     try {
+      setIsLoading(true);
+      showToast("dismiss");
+      showToast("loading", "Opening Phantom Wallet...");
+
       const fromPubkey = new PublicKey(userData.walletAddress);
       const toPubkey = new PublicKey(donateDetails);
 
       if (isNaN(amountToDonate) || amountToDonate <= 0) {
-        alert("Please enter a valid donation amount.");
+        showToast("dismiss");
+        showToast("error", "Please enter a valid donation amount.");
         return;
       }
 
       const lamports = amountToDonate * 1e9;
 
-      // ✅ Helius RPC Connection
       const connection = new Connection(
         "https://devnet.helius-rpc.com/?api-key=81edb2f6-ad3c-48a0-b8de-2792a9e6464b",
         "confirmed"
@@ -74,23 +82,51 @@ const DonatePopup = ({ open, onClose, walletAddress }) => {
       );
 
       transaction.feePayer = fromPubkey;
+      showToast("dismiss");
 
-      // ✅ Blockhash alma
+      showToast("loading", "Preparing transaction...");
       const { blockhash } = await connection.getLatestBlockhash("confirmed");
       transaction.recentBlockhash = blockhash;
+      showToast("dismiss");
 
+      showToast(
+        "loading",
+        "Please approve the transaction in Phantom Wallet..."
+      );
       const signed = await window.solana.signTransaction(transaction);
+      showToast("dismiss");
+      showToast("loading", "Sending transaction to network...");
       const signature = await connection.sendRawTransaction(signed.serialize());
+      showToast("dismiss");
 
+      showToast("loading", "Confirming transaction...");
       await connection.confirmTransaction(signature, "confirmed");
+      showToast("dismiss");
 
+      showToast("loading", "Creating donation record...");
+      await dispatch(
+        createDonationForCampaign({
+          amount: amountToDonate.toString(),
+          campaignID: campaignId,
+          transactionID: signature,
+        })
+      );
+      showToast("dismiss");
+
+      showToast(
+        "success",
+        "Donation successful! Thank you for your contribution."
+      );
       router.push("/thankyou");
     } catch (err) {
-      showToast("dissmis")
-      showToast("error", "Donation failed. Please try again.");
-    }
+      showToast("dismiss");
 
-    onClose();
+      showToast("error", "Donation failed. Please try again.");
+      console.error("Donation error:", err);
+    } finally {
+      setIsLoading(false);
+      onClose();
+    }
   };
 
   const predefinedAmounts = [0.001, 0.005, 0.01, 0.05];
@@ -121,6 +157,7 @@ const DonatePopup = ({ open, onClose, walletAddress }) => {
                   setSelectedAmount(amt);
                   setCustomAmount("");
                 }}
+                disabled={isLoading}
               >
                 {amt} SOL
               </Button>
@@ -156,6 +193,7 @@ const DonatePopup = ({ open, onClose, walletAddress }) => {
               setCustomAmount(e.target.value);
               setSelectedAmount(null);
             }}
+            disabled={isLoading}
             sx={{
               "& .MuiInputBase-input": {
                 fontSize: "24px",
@@ -168,6 +206,7 @@ const DonatePopup = ({ open, onClose, walletAddress }) => {
               <Checkbox
                 checked={agree}
                 onChange={(e) => setAgree(e.target.checked)}
+                disabled={isLoading}
               />
             }
             label="I agree to the terms and conditions"
@@ -176,12 +215,18 @@ const DonatePopup = ({ open, onClose, walletAddress }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} color="secondary" variant="contained">
+        <Button
+          onClick={onClose}
+          color="secondary"
+          variant="contained"
+          disabled={isLoading}
+        >
           Cancel
         </Button>
         <Button
           variant="contained"
           onClick={handleDonate}
+          disabled={isLoading || !agree || (!selectedAmount && !customAmount)}
           sx={{
             marginLeft: "auto",
             marginRight: "0",
@@ -219,7 +264,11 @@ const DonatePopup = ({ open, onClose, walletAddress }) => {
             },
           }}
         >
-          Donate Now
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "Donate Now"
+          )}
         </Button>
       </DialogActions>
     </Dialog>

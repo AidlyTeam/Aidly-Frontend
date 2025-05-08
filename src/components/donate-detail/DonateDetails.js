@@ -284,6 +284,7 @@ const DonateDetailPagesCard = ({ donateDetails = [] }) => {
         onClose={handleClose}
         organization={donateDetails.name}
         walletAddress={donateDetails.walletAddress}
+        campaignId={donateDetails.id}
       />
     </Grid>
   );
