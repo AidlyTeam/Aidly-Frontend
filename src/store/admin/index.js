@@ -1,9 +1,9 @@
-
-import { combineReducers } from '@reduxjs/toolkit';
-import badgeReducer from './badge';
-
+import { combineReducers } from "@reduxjs/toolkit";
+import badgeReducer from "./badge";
+import campaignReducer from "./campaign";
 const adminReducer = combineReducers({
-    badge : badgeReducer,
+  badge: badgeReducer,
+  campaign: campaignReducer,
 });
 
 export default adminReducer;

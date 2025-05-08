@@ -19,23 +19,11 @@ import DonatePopup from "../popup/DonatePopup";
 import { useState } from "react";
 import UnpublishedIcon from "@mui/icons-material/Unpublished";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import Image from "next/image";
+import { changeVerificationStatus } from "@/store/admin/campaign";
+import { useDispatch } from "react-redux";
 
-const DonateDetailAdminPagesCard = () => {
-  const donateDetails = {
-    id: 1,
-    logo: "https://example.com/logo.png",
-    name: "Clean Water Project",
-    organization: "Water for All Foundation",
-    location: "Kenya",
-    date: "30 Apr 2025",
-    goal: 10000,
-    raised: 4500,
-    tags: ["Environment", "Urgent"],
-    verify: true,
-    description:
-      "This project aims to provide clean drinking water to communities in need in Kenya. We are working to install water purification systems and educate the community about hygiene practices.",
-  };
-
+const DonateDetailAdminPagesCard = ({ donateDetails = [] }) => {
   const progress = (donateDetails.raised / donateDetails.goal) * 100;
 
   const getProgressGradient = (progress) => {
@@ -46,6 +34,7 @@ const DonateDetailAdminPagesCard = () => {
   };
 
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const handleDonateClick = () => {
     setOpen(true);
@@ -53,10 +42,23 @@ const DonateDetailAdminPagesCard = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const [isVerified, setIsVerified] = useState(donateDetails.verify);
 
-  const handleVerify = () => setIsVerified(true);
-  const handleUnverify = () => setIsVerified(false);
+  const handleVerify = () => {
+    dispatch(changeVerificationStatus({
+      campaignID: donateDetails.id,
+        isVerified: true
+    }));
+  };
+
+  const handleUnverify = () => {
+    dispatch(changeVerificationStatus({
+      campaignID: donateDetails.id,
+        isVerified: false
+    }));
+  };
+
+  console.log(donateDetails);
+  
 
   return (
     <Grid container spacing={3}>
@@ -81,25 +83,18 @@ const DonateDetailAdminPagesCard = () => {
                   gap: 1,
                 }}
               >
-                {/* <Typography
-                    variant="body2"
-                    color="primary.dark"
-                    fontWeight={500}
-                    fontSize={16}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    {donateDetails.organization}
-                  </Typography> */}
                 <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
-                  {donateDetails.tags.map((tag) => (
+                  {donateDetails?.categories?.categories?.map((tag) => (
                     <Chip
-                      key={tag}
-                      label={tag}
+                      key={tag.id}
+                      label={tag.name}
                       variant="outlined"
-                      color={tag.toLowerCase() === "urgent" ? "error" : "info"}
+                      color={
+                        tag.name.toLowerCase() === "urgent" ? "error" : "info"
+                      }
                       size="small"
                       sx={
-                        tag.toLowerCase() === "urgent"
+                        tag.name.toLowerCase() === "urgent"
                           ? {
                               animation: "pulse 1s infinite",
                               borderColor: theme.palette.error.main,
@@ -121,8 +116,8 @@ const DonateDetailAdminPagesCard = () => {
                     gap: 0.5,
                   }}
                 >
-                  {donateDetails.name}
-                  {donateDetails.verify && (
+                  {donateDetails.title}
+                  {donateDetails.isVerified && (
                     <VerifiedIcon
                       fontSize="medium"
                       sx={{ mr: 0.5, color: theme.palette.primary.dark }}
@@ -153,7 +148,7 @@ const DonateDetailAdminPagesCard = () => {
                   sx={{ display: "flex", alignItems: "center" }}
                 >
                   <LocationOnIcon fontSize="small" sx={{ mr: 0.5 }} />
-                  {donateDetails.location}
+                  Turkey
                 </Typography>
               </Box>
             </Box>
@@ -167,7 +162,7 @@ const DonateDetailAdminPagesCard = () => {
                 fontSize: "14px",
               }}
             >
-              Posted: {donateDetails.date}
+              Posted: {new Date(donateDetails.startDate).toLocaleDateString()}
             </Typography>
 
             <Box
@@ -208,13 +203,27 @@ const DonateDetailAdminPagesCard = () => {
             </Box>
 
             <Box mt={2}>
-              <Typography
-                variant="body2"
-                fontWeight={500}
-                color={theme.palette.secondary.dark}
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                }}
               >
-                Raised: {donateDetails.raised.toLocaleString()} / {donateDetails.goal.toLocaleString()} SOL
-              </Typography>
+                <Typography
+                  variant="body2"
+                  fontWeight={500}
+                  color={theme.palette.secondary.dark}
+                >
+                  Raised: {donateDetails.raisedAmount} /{" "}
+                  {donateDetails.targetAmount}
+                </Typography>
+                <Image
+                  src="/solana-sol-icon.svg"
+                  alt="Solana"
+                  width={24}
+                  height={24}
+                />
+              </Box>
               <LinearProgress
                 variant="determinate"
                 value={progress}
@@ -225,7 +234,11 @@ const DonateDetailAdminPagesCard = () => {
                   backgroundColor: theme.palette.grey[300],
                   "& .MuiLinearProgress-bar": {
                     borderRadius: 5,
-                    backgroundImage: getProgressGradient(progress),
+                    backgroundImage: getProgressGradient(
+                      (Number(donateDetails.raisedAmount) /
+                        Number(donateDetails.targetAmount)) *
+                        100
+                    ),
                   },
                 }}
               />
@@ -242,7 +255,7 @@ const DonateDetailAdminPagesCard = () => {
               width: "97%",
             }}
           >
-            {isVerified ? (
+            {donateDetails.isVerified ? (
               <Button
                 onClick={handleUnverify}
                 startIcon={<UnpublishedIcon />}
@@ -336,6 +349,7 @@ const DonateDetailAdminPagesCard = () => {
         open={open}
         onClose={handleClose}
         organization={donateDetails.name}
+        walletAddress={donateDetails.walletAddress}
       />
     </Grid>
   );

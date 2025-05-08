@@ -37,7 +37,7 @@ export const organizationListColumn = [
     },
   },
   {
-    field: "organization_name",
+    field: "title",
     headerName: "Organization Name",
     flex: 0.45,
     minWidth: 100,
@@ -46,7 +46,7 @@ export const organizationListColumn = [
 
       return (
         <CustomTooltip
-          title={row.organization_name}
+          title={row.title}
           placement="top"
           arrow
           sx={{}}
@@ -66,14 +66,14 @@ export const organizationListColumn = [
               whiteSpace: "nowrap",
             }}
           >
-            {row.organization_name || "-"}
+            {row.title || "-"}
           </Typography>
         </CustomTooltip>
       );
     },
   },
   {
-    field: "donate_count",
+    field: "raisedAmount",
     headerName: "Total Donation",
     flex: 0.45,
     minWidth: 100,
@@ -81,7 +81,7 @@ export const organizationListColumn = [
       const { row } = params;
 
       return (
-        <CustomTooltip title={row.donate_count} placement="top" arrow sx={{}}>
+        <CustomTooltip title={row.raisedAmount} placement="top" arrow sx={{}}>
           <Typography
             variant="body1"
             sx={{
@@ -97,7 +97,7 @@ export const organizationListColumn = [
               whiteSpace: "nowrap",
             }}
           >
-            {row.donate_count || "-"}
+            {row.raisedAmount || "-"}
           </Typography>
         </CustomTooltip>
       );
@@ -128,14 +128,14 @@ export const organizationListColumn = [
               whiteSpace: "nowrap",
             }}
           >
-            {row.total_donate || "-"}
+            {row.targetAmount - row.raisedAmount || "0"}
           </Typography>
         </CustomTooltip>
       );
     },
   },
   {
-    field: "total_donate_count",
+    field: "raisedAmount",
     headerName: "Total Donation Count",
     flex: 0.45,
     minWidth: 100,
@@ -144,7 +144,7 @@ export const organizationListColumn = [
 
       return (
         <CustomTooltip
-          title={row.total_donate_count}
+          title={row.raisedAmount}
           placement="top"
           arrow
           sx={{}}
@@ -164,7 +164,7 @@ export const organizationListColumn = [
               whiteSpace: "nowrap",
             }}
           >
-            {row.total_donate_count || "-"}
+            {row.raisedAmount || "-"}
           </Typography>
         </CustomTooltip>
       );
