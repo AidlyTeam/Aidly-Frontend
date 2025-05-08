@@ -69,7 +69,7 @@ const EditOrganizations = () => {
 
       const response = await dispatch(updateCampaign(data));
 
-      if (response.statusCode) {
+      if (response.meta.requestStatus === "fulfilled") {
         router.push('/profile/my-campaigns');
       }
     } catch (error) {

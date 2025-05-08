@@ -54,13 +54,17 @@ const BadgeDetails = () => {
     e.preventDefault()
     try {
       if (isEdit) {
-        await dispatch(updateBadge({ id, data: formData })).unwrap()
+         await dispatch(updateBadge({ id, data: formData })).unwrap().then((res) => {
+          console.log(res);
+          if (res.statusCode === 200) {
+            router.push('/admin/badge-list')
+          }
+         })
       } else {
         await dispatch(createBadge(formData)).unwrap()
+       
       }
-      router.push('/admin/badge-list')
     } catch (error) {
-      // toast.error(`Failed to ${isEdit ? 'update' : 'create'} badge`)
     }
   }
 

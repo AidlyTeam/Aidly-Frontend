@@ -55,7 +55,8 @@ const CreateOrganizations = () => {
 
       const response = await dispatch(createCampaign(formData));
 
-      if (response.statusCode) {
+
+      if (response.meta.requestStatus === "fulfilled") {
         router.push('/profile/my-campaigns');
       }
     } catch (error) {

@@ -1,5 +1,7 @@
+import { showToast } from "@/utils/showToast";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const initialState = {
   loading: false,
@@ -28,7 +30,7 @@ export const createBadge = createAsyncThunk(
         data: formData,
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.data;
       }
     } catch (error) {
@@ -144,10 +146,15 @@ const badgeSlice = createSlice({
         state.loading = false;
         state.data = action.payload;
         state.error = false;
+        showToast("dismiss")
+        showToast("success", "Badge created successfully");
+        
       })
       .addCase(createBadge.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || true;
+        state.error = action.payload;
+        showToast("dismiss")
+        showToast("error", action.payload);
       })
       .addCase(getBadges.pending, (state) => {
         state.loading = true;
@@ -178,15 +185,20 @@ const badgeSlice = createSlice({
       .addCase(updateBadge.pending, (state) => {
         state.loading = true;
         state.error = false;
+        showToast("dismiss")
       })
       .addCase(updateBadge.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
         state.error = false;
+        showToast("dismiss")
+        showToast("success", "Badge updated successfully");
       })
       .addCase(updateBadge.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || true;
+        showToast("dismiss")
+        showToast("error", action.payload);
       })
       .addCase(deleteBadge.pending, (state) => {
         state.loading = true;
@@ -196,10 +208,14 @@ const badgeSlice = createSlice({
         state.loading = false;
         state.data = action.payload;
         state.error = false;
+        showToast("dismiss")
+        showToast("success", "Badge deleted successfully");
       })
       .addCase(deleteBadge.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || true;
+        showToast("dismiss")
+        showToast("error", action.payload);
       });
   },
 });

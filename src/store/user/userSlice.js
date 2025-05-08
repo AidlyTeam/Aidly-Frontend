@@ -1,3 +1,4 @@
+import { showToast } from "@/utils/showToast";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -10,7 +11,7 @@ const initialState = {
 
 export const updateProfile = createAsyncThunk(
   "user/updateProfile",
-  async (data, { rejectWithValue }) => {
+  async (data, { rejectWithValue,dispatch }) => {
     try {
       const response = await axios({
         method: "POST",
@@ -20,12 +21,14 @@ export const updateProfile = createAsyncThunk(
         },
         data: JSON.stringify(data),
       });
+      console.log(response);
      
       if (response.status === 200) {
+        dispatch(getUserInfo());
         return response.data;
       }
     } catch (response) {
-      return rejectWithValue(response.message || error.message);
+      return rejectWithValue(error.response?.data?.message|| error.message);
     }
   }
 );
@@ -63,10 +66,14 @@ const userSlice = createSlice({
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
+        showToast("dismiss")
+        showToast("success", "Profile updated successfully");
       })
-      .addCase(updateProfile.rejected, (state) => {
+      .addCase(updateProfile.rejected, (state,action) => {
         state.loading = false;
-        state.error = true;
+        state.error = action.payload;
+        showToast("dismiss")
+        showToast("error", action.payload);
       })
       .addCase(getUserInfo.pending, (state) => {
         state.loading = true;
