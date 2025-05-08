@@ -31,7 +31,6 @@ const MyOrganizations = () => {
   const limit = 10;
 
   const { campaign: campaignSlice } = useSelector((state) => state);
-  console.log("Campaign Slice:", campaignSlice);
   const campaigns = Array.isArray(campaignSlice?.data?.data)
     ? campaignSlice.data.data
     : [];

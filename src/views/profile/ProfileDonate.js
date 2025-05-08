@@ -1,36 +1,27 @@
-import React from 'react';
-import { Container, Grid, Box, Typography } from '@mui/material';
-import DonationCard from '@/components/profile/DonateCard';
-import NoDonations from '@/components/profile/NoDonation';
-import { useRouter } from 'next/router';
+import React, { useEffect } from "react";
+import { Container, Grid, Box, Typography } from "@mui/material";
+import DonationCard from "@/components/profile/DonateCard";
+import NoDonations from "@/components/profile/NoDonation";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { getDonationsForCampaign } from "@/store/donations/donationsSlice";
 
 const ProfileDonate = () => {
-  // const donations = []; 
-  const donations = [
-    {
-      id: 1,
-      organization: "Clean Water Project",
-      amount: 100,
-      date: "2023-10-01",
-    },
-    {
-      id: 2,
-      organization: "Food for All",
-      amount: 50,
-      date: "2023-09-15",
-    },
-    {
-      id: 3,
-      organization: "Tree Plantation Initiative",
-      amount: 200,
-      date: "2023-08-20",
-    },
-  ];
+  const dispatch = useDispatch();
+  const { donations: donationSlice } = useSelector((state) => state);
 
   const router = useRouter();
+
+  useEffect(() => {
+    dispatch(getDonationsForCampaign());
+  }, [dispatch]);
+
   const handleDonateClick = () => {
-    router.push('/donates');
+    router.push("/donates");
   };
+
+  console.log(donationSlice.data.data);
+
 
   return (
     <Box>
@@ -38,16 +29,16 @@ const ProfileDonate = () => {
         My Donations
       </Typography>
 
-      {donations.length === 0 ? (
+      {donationSlice?.data?.data?.totalCount === 0 ? (
         <NoDonations onDonateClick={handleDonateClick} />
       ) : (
         <Grid container spacing={2}>
-          {donations?.map((donation) => (
+          {donationSlice?.data?.data?.donations.map((donation) => (
             <Grid item xs={12} sm={6} md={4} key={donation.id}>
               <DonationCard
-                organization={donation.organization}
+                organization={donation.campaignTitle}
                 amount={donation.amount}
-                date={donation.date}
+                date={donation.donationDate}
               />
             </Grid>
           ))}

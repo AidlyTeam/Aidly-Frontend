@@ -11,7 +11,7 @@ export const organizationListColumn = [
     minWidth: 100,
     renderCell: (params) => {
       const { row } = params;
-      const fullName = `${row.first_name} ${row.last_name}`;
+      const fullName = `${row.campaignUser.name} ${row.campaignUser.surname}`;
 
       return (
         <CustomTooltip title={fullName} placement="top" arrow sx={{}}>
