@@ -1,5 +1,4 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import CustomTooltip from "../tooltip";
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
@@ -19,7 +18,7 @@ const BadgeList = ({ badges }) => {
             alignItems: "center",
           }}
         >
-          <MilitaryTechIcon
+          <EmojiEventsIcon
             sx={{
               mr: 1,
               width: 36,
@@ -83,7 +82,7 @@ const BadgeList = ({ badges }) => {
           alignItems: "center",
         }}
       >
-        <MilitaryTechIcon
+        <EmojiEventsIcon
           sx={{
             mr: 1,
             width: 36,

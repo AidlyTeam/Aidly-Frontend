@@ -6,6 +6,7 @@ import userSlice from './user/userSlice'
 import categorySlice from './category/categorySlice'
 import campaignSlice from './campaign/campaignSlice'
 import donationsSlice from './donations/donationsSlice'
+import admin from './admin'
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     category : categorySlice,
     campaign : campaignSlice,
     donations : donationsSlice,
+    admin,
     
   },
   

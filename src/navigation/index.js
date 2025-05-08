@@ -8,6 +8,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import ListIcon from '@mui/icons-material/List';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import PolylineIcon from '@mui/icons-material/Polyline';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 /*
     @data structure
     {
@@ -68,6 +69,13 @@ const navigation = [
         path: "/admin/organization-list",
         title: "Organizations",
         icon: <CorporateFareIcon />,
+        permission: "admin",
+    },
+    { // single item
+        type: "item",
+        path: "/admin/badge-list",
+        title: "Badges",
+        icon: <EmojiEventsIcon />,
         permission: "admin",
     },
     { 
