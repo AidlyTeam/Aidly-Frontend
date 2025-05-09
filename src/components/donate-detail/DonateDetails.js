@@ -31,6 +31,7 @@ const DonateDetailPagesCard = ({ donateDetails = [] }) => {
 
   const [open, setOpen] = useState(false);
 
+
   const handleDonateClick = () => {
     setOpen(true);
   };
@@ -74,9 +75,9 @@ const DonateDetailPagesCard = ({ donateDetails = [] }) => {
                       sx={
                         tag.name.toLowerCase() === "urgent"
                           ? {
-                              animation: "pulse 1s infinite",
-                              borderColor: theme.palette.error.main,
-                            }
+                            animation: "pulse 1s infinite",
+                            borderColor: theme.palette.error.main,
+                          }
                           : {}
                       }
                     />
@@ -193,7 +194,7 @@ const DonateDetailPagesCard = ({ donateDetails = [] }) => {
                   color={theme.palette.secondary.dark}
                 >
                   Raised: {donateDetails.raisedAmount} /{" "}
-                  {donateDetails.targetAmount} 
+                  {donateDetails.targetAmount}
                 </Typography>
                 <Image
                   src="/solana-sol-icon.svg"
@@ -215,7 +216,7 @@ const DonateDetailPagesCard = ({ donateDetails = [] }) => {
                     backgroundImage: getProgressGradient(
                       (Number(donateDetails.raisedAmount) /
                         Number(donateDetails.targetAmount)) *
-                        100
+                      100
                     ),
                   },
                 }}
