@@ -88,8 +88,11 @@ const FilterBar = ({
                 <em>Urgent Filter</em>
               </MenuItem>
               <MenuItem value="all">All</MenuItem>
-              <MenuItem value="urgent">Urgent Only</MenuItem>
-              <MenuItem value="non-urgent">Non-Urgent</MenuItem>
+              <MenuItem value="urgent">Urgent</MenuItem>
+              <MenuItem value="normal">Normal</MenuItem>
+              <MenuItem value="critical">Critical</MenuItem>
+              <MenuItem value="featured">Featured</MenuItem>
+              <MenuItem value="scheduled">Scheduled</MenuItem>
             </Select>
           </FormControl>
         </Box>

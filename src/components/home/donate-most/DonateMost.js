@@ -173,20 +173,36 @@ const DonateMost = ({ donations = [], loading = false }) => {
                     }}
                   />
 
-                  {item.categories?.categories &&
-                    item.categories.categories.length > 0 && (
-                      <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
-                        {item.categories.categories.map((tag) => (
-                          <Chip
-                            key={tag.id}
-                            label={tag.name}
-                            variant="outlined"
-                            color="info"
-                            size="small"
-                          />
-                        ))}
-                      </Stack>
+                  <Box display="flex" flexWrap="wrap" gap={1}>
+                    {item.categories?.categories ? (
+                      item.categories.categories.map((tag) => (
+                        <Chip
+                          key={tag.id}
+                          label={tag.name}
+                          variant="outlined"
+                          color="info"
+                          size="small"
+                        />
+                      ))
+                    ) : (
+                      <Chip
+                        label="Not Found"
+                        variant="outlined"
+                        color="info"
+                        size="small"
+                      />
                     )}
+                    <Chip
+                      key={item.status}
+                      label={
+                        item.status.charAt(0).toUpperCase() +
+                        item.status.slice(1).toLowerCase()
+                      }
+                      variant="outlined"
+                      color={item.status === "critical" ? "error" : "info"}
+                      size="small"
+                    />
+                  </Box>
 
                   <Box mt={2}>
                     <Box

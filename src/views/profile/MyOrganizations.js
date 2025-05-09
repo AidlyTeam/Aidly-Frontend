@@ -169,17 +169,28 @@ const MyOrganizations = () => {
                       >
                         {campaign.title}
                       </Typography>
-                      <IconButton
-                        onClick={() => handleDelete(campaign.id)}
-                        sx={{
-                          color: "error.main",
-                          "&:hover": {
-                            backgroundColor: "rgba(211, 47, 47, 0.1)",
-                          },
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Chip
+                          label={campaign.status}
+                          size="small"
+                          sx={{
+                            backgroundColor: campaign.status === 'critical' ? 'error.main' : 'success.main',
+                            color: '#fff',
+                            fontWeight: 'bold'
+                          }}
+                        />
+                        <IconButton
+                          onClick={() => handleDelete(campaign.id)}
+                          sx={{
+                            color: "error.main",
+                            "&:hover": {
+                              backgroundColor: "rgba(211, 47, 47, 0.1)",
+                            },
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
                     </Box>
                     <Typography variant="body2" color="gray" mt={1}>
                       {campaign.description}
@@ -194,10 +205,23 @@ const MyOrganizations = () => {
                       mb={1}
                     >
                       <Box display="flex" flexWrap="wrap" gap={1}>
-                        {campaign.categories?.categories?.map((category) => (
+                        {campaign.categories?.categories ? (
+                          campaign.categories.categories.map((category) => (
+                            <Chip
+                              key={category.id}
+                              label={category.name}
+                              size="small"
+                              sx={{
+                                backgroundColor: "rgba(99, 241, 249, 0.1)",
+                                color: "secondary.main",
+                                border: "1px solid",
+                                borderColor: "secondary.main",
+                              }}
+                            />
+                          ))
+                        ) : (
                           <Chip
-                            key={category.id}
-                            label={category.name}
+                            label="No Categories"
                             size="small"
                             sx={{
                               backgroundColor: "rgba(99, 241, 249, 0.1)",
@@ -206,7 +230,7 @@ const MyOrganizations = () => {
                               borderColor: "secondary.main",
                             }}
                           />
-                        ))}
+                        )}
                       </Box>
                     </Box>
 

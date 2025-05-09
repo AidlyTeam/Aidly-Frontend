@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { getCampaign, getCampaignById } from '@/store/campaign/campaignSlice'
 import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
+import { getCampaignByIdAdmin } from '@/store/admin/campaign'
 
 
 const DonateDetailPages = () => {
@@ -16,7 +17,7 @@ const DonateDetailPages = () => {
   const { id } = router.query;
 
   useEffect(() => {
-    dispatch(getCampaignById(id));
+    dispatch(getCampaignByIdAdmin({id}));
   }, [dispatch, id]);
 
   const donationsDetails = campaignSlice.data.data || [];

@@ -37,7 +37,7 @@ const EditOrganizations = () => {
         description: campaign.description || "",
         walletAddress: campaign.walletAddress || "",
         targetAmount: campaign.targetAmount || "",
-        statusType: campaign.statusType || "normal",
+        statusType: campaign.status || "normal",
         startDate: campaign.startDate ? new Date(campaign.startDate).toISOString().slice(0, 16) : "",
         endDate: campaign.endDate ? new Date(campaign.endDate).toISOString().slice(0, 16) : "",
       });

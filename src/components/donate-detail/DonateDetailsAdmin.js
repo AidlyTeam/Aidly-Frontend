@@ -20,7 +20,10 @@ import { useState } from "react";
 import UnpublishedIcon from "@mui/icons-material/Unpublished";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import Image from "next/image";
-import { changeVerificationStatus } from "@/store/admin/campaign";
+import {
+  changeVerificationStatus,
+  getCampaignByIdAdmin,
+} from "@/store/admin/campaign";
 import { useDispatch } from "react-redux";
 
 const DonateDetailAdminPagesCard = ({ donateDetails = [] }) => {
@@ -43,22 +46,38 @@ const DonateDetailAdminPagesCard = ({ donateDetails = [] }) => {
     setOpen(false);
   };
 
-  const handleVerify = () => {
-    dispatch(changeVerificationStatus({
-      campaignID: donateDetails.id,
-        isVerified: true
-    }));
+  const handleVerify = async () => {
+    try {
+      await dispatch(
+        changeVerificationStatus({
+          campaignID: donateDetails.id,
+          isVerified: true,
+        })
+      );
+      setTimeout(() => {
+        dispatch(getCampaignByIdAdmin({ id: donateDetails.id }));
+      }, 500);
+    } catch (error) {
+      console.error('Error verifying campaign:', error);
+    }
   };
 
-  const handleUnverify = () => {
-    dispatch(changeVerificationStatus({
-      campaignID: donateDetails.id,
-        isVerified: false
-    }));
+  const handleUnverify = async () => {
+    try {
+      await dispatch(
+        changeVerificationStatus({
+          campaignID: donateDetails.id,
+          isVerified: false,
+        })
+      );
+      setTimeout(() => {
+        dispatch(getCampaignByIdAdmin({ id: donateDetails.id }));
+      }, 500);
+    } catch (error) {
+      console.error('Error unverifying campaign:', error);
+    }
   };
 
-  console.log(donateDetails);
-  
 
   return (
     <Grid container spacing={3}>

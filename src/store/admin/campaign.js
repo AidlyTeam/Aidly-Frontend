@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 const initialState = {
   loading: false,
   error: false,
-  data: null,
+  data: [],
 };
 
 
@@ -36,11 +36,11 @@ export const getCampaignsForAdmin = createAsyncThunk(
 
 export const getCampaignByIdAdmin = createAsyncThunk(
   "admin/getCampaignByIdAdmin",
-  async (id, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
       const response = await axios({
         method: "GET",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/campaign/${id}`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/private/campaign/${data.id}`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -160,14 +160,12 @@ const campaignSlice = createSlice({
       })
       .addCase(getCampaignByIdAdmin.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload.data;
         state.error = false;
       })
       .addCase(getCampaignByIdAdmin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload 
-        showToast("dismiss")
-        showToast("error", action.payload);
       });
   },
 });

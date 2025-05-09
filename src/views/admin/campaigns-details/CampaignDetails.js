@@ -6,28 +6,26 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 const CampaignDetails = () => {
-
-  const { campaignAdmin: campaignAdminSlice } = useSelector((state) => state);
-
+  const { data: campaignData, loading } = useSelector((state) => state.admin.campaign);
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
 
-
-
   useEffect(() => {
-    dispatch(getCampaignByIdAdmin(id));
+    if (id) {
+      dispatch(getCampaignByIdAdmin({id}));
+    }
   }, [dispatch, id]);
 
-  console.log(campaignAdminSlice);
+  if (loading) {
+    return <Box sx={{ width: '100%', maxWidth: '1200px', mx: 'auto', px: 2 }}>Loading...</Box>;
+  }
 
-  const donationsDetails = campaignAdminSlice?.data?.data || [];
-
-        
+  console.log('Campaign Data:', campaignData);
 
   return (
     <Box sx={{ width: '100%', maxWidth: '1200px', mx: 'auto', px: 2 }}>
-        <DonateDetailAdminPagesCard  donateDetails={donationsDetails} />
+        <DonateDetailAdminPagesCard donateDetails={campaignData} />
     </Box>
   )
 }

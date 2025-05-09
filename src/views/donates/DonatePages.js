@@ -32,7 +32,11 @@ const DonatePages = () => {
     }
     
     if (filters.isVerified) {
-      queryParams.append('isVerified', filters.isVerified);
+      if(filters.isVerified === "all") {
+        queryParams.append('status', "");
+      } else {
+        queryParams.append('status', filters.isVerified);
+      }
     }
     
     if (filters.page) {
@@ -44,7 +48,7 @@ const DonatePages = () => {
     }
     
     if (filters.categoryIds.length > 0) {
-      queryParams.append('categoryIds', filters.categoryIds.join(','));
+      queryParams.append('categoryIDList', filters.categoryIds.join(','));
     }
 
     dispatch(getCampaign(queryParams.toString()));
