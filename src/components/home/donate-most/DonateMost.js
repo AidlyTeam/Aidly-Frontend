@@ -49,6 +49,8 @@ const DonateMost = ({ donations = [], loading = false }) => {
         {donations.map((item) => {
           const progress =
             (Number(item.raisedAmount) / Number(item.targetAmount)) * 100;
+          const isFunded = Number(item.raisedAmount) >= Number(item.targetAmount);
+
           return (
             <Grid item xs={12} sm={6} md={4} key={item.id}>
               <Card
@@ -174,6 +176,7 @@ const DonateMost = ({ donations = [], loading = false }) => {
                   />
 
                   <Box display="flex" flexWrap="wrap" gap={1}>
+
                     {item.categories?.categories ? (
                       item.categories.categories.map((tag) => (
                         <Chip
@@ -202,8 +205,21 @@ const DonateMost = ({ donations = [], loading = false }) => {
                       color={item.status === "critical" ? "error" : "info"}
                       size="small"
                     />
+                    {isFunded && (
+                      <Chip
+                        label="Goal Met!"
+                        color="success"
+                        variant="filled"
+                        size="small"
+                        sx={{
+                          zIndex: 10,
+                          fontWeight: 600,
+                          color: "white",
+                          backgroundColor: "green",
+                        }}
+                      />
+                    )}
                   </Box>
-
                   <Box mt={2}>
                     <Box
                       sx={{
@@ -240,6 +256,8 @@ const DonateMost = ({ donations = [], loading = false }) => {
                         },
                       }}
                     />
+
+
                   </Box>
                 </CardContent>
               </Card>

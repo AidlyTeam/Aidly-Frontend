@@ -78,26 +78,26 @@ export const deleteCampaign = createAsyncThunk(
 );
 
 export const changeVerificationStatus = createAsyncThunk(
-    "admin/changeVerificationStatus",
-    async (data, { rejectWithValue }) => {
-      try {
-        const response = await axios({
-          method: "PATCH",
-          url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/campaign/${data.campaignID}/verify`,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: JSON.stringify(data),
-        });
-  
-        if (response.status === 200) {
-          return response.data;
-        }
-      } catch (error) {
-        return rejectWithValue(error.response?.data?.message || error.message);
+  "admin/changeVerificationStatus",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios({
+        method: "PATCH",
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/campaign/${data.campaignID}/verify`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify(data),
+      });
+
+      if (response.status === 200) {
+        return response.data;
       }
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
-  );
+  }
+);
 
 const campaignSlice = createSlice({
   name: "campaign",
@@ -119,7 +119,7 @@ const campaignSlice = createSlice({
         state.loading = false;
         state.error = action.payload || true;
       })
-     
+
       .addCase(deleteCampaign.pending, (state) => {
         state.loading = true;
         state.error = false;
@@ -165,7 +165,7 @@ const campaignSlice = createSlice({
       })
       .addCase(getCampaignByIdAdmin.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload 
+        state.error = action.payload
       });
   },
 });

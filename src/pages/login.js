@@ -43,11 +43,11 @@ const Login = () => {
         ...result,
         role: result?.data?.role,
       };
-      
+
       localStorage.setItem("userData", JSON.stringify(user));
       setUser(user);
       setUserData(result.data);
-      
+
       if (result.data?.role === "first") {
         setShowUpdateProfile(true);
       } else {
@@ -68,7 +68,7 @@ const Login = () => {
       sx={{
         position: "relative",
         minHeight: "100vh",
-        backgroundColor: "#0A0C10",
+        backgroundColor: "#FFFFFF", // Beyaz arka plan
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -78,13 +78,14 @@ const Login = () => {
       <Image
         src={logo}
         alt="Logo"
-        layout="fill"
-        objectFit="cover"
-        quality={100}
+        layout="intrinsic"
+        width={150}
+        height={150}
         style={{
-          filter: "blur(20px)",
-          opacity: 0.1,
-          zIndex: 0,
+          position: "absolute",
+          bottom: "30px",
+          left: "30px",
+          zIndex: 2,
         }}
       />
 
@@ -95,17 +96,40 @@ const Login = () => {
           zIndex: 2,
           textAlign: "center",
           p: 4,
-          borderRadius: 4,
-          backdropFilter: "blur(10px)",
-          backgroundColor: "rgba(10, 12, 16, 0.6)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-          boxShadow: "0 0 25px rgba(99, 241, 249, 0.2)",
+          borderRadius: "24px",
+          backdropFilter: "blur(20px)",
+          background: "linear-gradient(135deg, rgba(21, 184, 29, 0.4), rgba(99, 241, 249, 0.2))",
+          border: "1px solid rgba(255, 255, 255, 0.2)",
+          boxShadow: "0 0 40px rgba(99, 241, 249, 0.4), 0 0 10px rgba(21, 184, 29, 0.4)",
+          overflow: "hidden",
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          "&:hover": {
+            transform: "scale(1.02)",
+            boxShadow: "0 0 60px rgba(99, 241, 249, 0.5), 0 0 20px rgba(21, 184, 29, 0.5)",
+          },
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: "-75%",
+            width: "200%",
+            height: "100%",
+            background:
+              "linear-gradient(120deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%)",
+            transform: "skewX(-20deg)",
+            animation: "shineContainer 3s infinite",
+          },
+          "@keyframes shineContainer": {
+            "0%": { left: "-75%" },
+            "50%": { left: "125%" },
+            "100%": { left: "125%" },
+          },
         }}
       >
         <Typography
           variant="h4"
           gutterBottom
-          sx={{ color: "#63f1f9", fontWeight: "bold" }}
+          sx={{ color: "#15B81D", fontWeight: "bold" }}
         >
           Login With Phantom Wallet
         </Typography>
@@ -113,9 +137,9 @@ const Login = () => {
         <Typography
           variant="body1"
           mb={4}
-          sx={{ color: "#8997AC", fontSize: "1.1rem" }}
+          sx={{ color: "#333", fontSize: "1.1rem" }}
         >
-          Connect your Phantom wallet to access the application. If you don't have a Phantom wallet, please install it from the official website.
+          Connect your Phantom wallet to access the app. Don't have one? Get it from the official site.
         </Typography>
 
         <Button
@@ -142,9 +166,9 @@ const Login = () => {
         </Button>
       </Container>
 
-      <UpdateProfile 
-        open={showUpdateProfile} 
-        onClose={handleProfileUpdate} 
+      <UpdateProfile
+        open={showUpdateProfile}
+        onClose={handleProfileUpdate}
         isDefault={false}
       />
     </Box>

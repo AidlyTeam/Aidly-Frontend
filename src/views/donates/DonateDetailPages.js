@@ -9,7 +9,6 @@ import { getCampaignByIdAdmin } from '@/store/admin/campaign'
 
 
 const DonateDetailPages = () => {
-
   const { campaign: campaignSlice } = useSelector((state) => state);
 
   const dispatch = useDispatch();
@@ -17,7 +16,7 @@ const DonateDetailPages = () => {
   const { id } = router.query;
 
   useEffect(() => {
-    dispatch(getCampaignByIdAdmin({id}));
+    dispatch(getCampaignByIdAdmin({ id }));
   }, [dispatch, id]);
 
   const donationsDetails = campaignSlice.data.data || [];
@@ -25,7 +24,7 @@ const DonateDetailPages = () => {
 
   return (
     <Box sx={{ width: '100%', maxWidth: '1200px', mx: 'auto', px: 2 }}>
-        <DonateDetailPagesCard donateDetails={donationsDetails} />
+      <DonateDetailPagesCard donateDetails={donationsDetails} />
     </Box>
   )
 }

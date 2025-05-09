@@ -82,17 +82,17 @@ const MyOrganizations = () => {
               borderRadius: 4,
               p: 5,
               boxShadow: "0 0 25px rgba(0,255,163,0.2)",
-              background: "linear-gradient(15deg, #ffff, #111, #ffff)",
+              background: "linear-gradient(6deg, lightgreen, green, #ffff)",
               "&:hover": {
                 boxShadow: "0 0 35px rgba(99,241,249,0.5)",
               },
             }}
           >
             <BlurOnIcon sx={{ fontSize: 64, color: "#63f1f9" }} />
-            <Typography variant="h5" mt={2} color="success.main">
+            <Typography variant="h4" mt={2} color="white" sx={{ fontWeight: 500 }}>
               Not Start a Campaign
             </Typography>
-            <Typography variant="body1" color="secondary.light">
+            <Typography variant="body2" color="lightgray">
               Start a campaign and make a difference in the Web3 world.
             </Typography>
             <Button
@@ -277,7 +277,7 @@ const MyOrganizations = () => {
                             backgroundImage: getProgressGradient(
                               (Number(campaign.raisedAmount) /
                                 Number(campaign.targetAmount)) *
-                                100
+                              100
                             ),
                           },
                         }}
