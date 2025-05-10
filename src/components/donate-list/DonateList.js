@@ -46,10 +46,16 @@ const DonateList = ({ donations = [] }) => {
             50% { opacity: 0.4; }
             100% { opacity: 1; }
           }
+          @keyframes urgentPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+          }
         `}
       </style>
       <Grid container spacing={3}>
         {donations.map((item) => {
+          const isUrgent = item.status === "urgent";
           return (
             <Grid item xs={12} sm={6} md={4} key={item.id}>
               <Card
@@ -60,6 +66,10 @@ const DonateList = ({ donations = [] }) => {
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
+                  ...(isUrgent && {
+                    animation: "urgentPulse 2s infinite",
+                    border: "2px solid #ff0000",
+                  }),
                   ":hover": {
                     boxShadow:
                       "0px 2px 10px -1px rgba(0,0,0,0.3), 0px 1px 10px 0px rgba(0,0,0,0.2), 0px 1px 10px 0px rgba(0,0,0,0.2)",
@@ -76,6 +86,7 @@ const DonateList = ({ donations = [] }) => {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        position: "relative",
                       }}
                     >
                       <img
@@ -92,6 +103,24 @@ const DonateList = ({ donations = [] }) => {
                           marginBottom: "16px",
                         }}
                       />
+                      {isUrgent && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            background: "rgba(255, 0, 0, 0.9)",
+                            color: "white",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            animation: "pulse 2s infinite",
+                          }}
+                        >
+                          Urgent
+                        </Box>
+                      )}
                     </Box>
                     <Box
                       sx={{
