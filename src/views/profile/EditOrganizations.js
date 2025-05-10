@@ -64,7 +64,8 @@ const EditOrganizations = () => {
         startDate: formattedStartDate,
         endDate: formattedEndDate,
         campaignID: id,
-        imageFile
+        imageFile,
+        acceptedTokenSymbol: "SOL"
       };
 
       const response = await dispatch(updateCampaign(data));

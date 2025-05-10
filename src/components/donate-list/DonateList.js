@@ -35,6 +35,8 @@ const DonateList = ({ donations = [] }) => {
 
   const router = useRouter();
 
+  console.log(donations);
+
   return (
     <Box>
       <style>

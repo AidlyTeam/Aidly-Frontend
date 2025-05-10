@@ -39,6 +39,8 @@ const DonateDetailPagesCard = ({ donateDetails = [] }) => {
     setOpen(false);
   };
 
+  console.log(donateDetails);
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={12} md={12} key={donateDetails.id}>

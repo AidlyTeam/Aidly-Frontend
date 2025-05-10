@@ -9,6 +9,7 @@ import ListIcon from '@mui/icons-material/List';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import PolylineIcon from '@mui/icons-material/Polyline';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import PaymentsIcon from '@mui/icons-material/Payments';
 /*
     @data structure
     {
@@ -94,6 +95,13 @@ const navigation = [
         path: "/donates",
         title: "All Company",
         icon: <VolunteerActivismIcon />,
+        permission: "home",
+    },
+    { // single item
+        type: "item",
+        path: "/all-donations",
+        title: "All Donations",
+        icon: <PaymentsIcon />,
         permission: "home",
     },
     { 

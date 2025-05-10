@@ -21,7 +21,6 @@ const CampaignDetails = () => {
     return <Box sx={{ width: '100%', maxWidth: '1200px', mx: 'auto', px: 2 }}>Loading...</Box>;
   }
 
-  console.log('Campaign Data:', campaignData);
 
   return (
     <Box sx={{ width: '100%', maxWidth: '1200px', mx: 'auto', px: 2 }}>

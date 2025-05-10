@@ -53,6 +53,8 @@ const CreateOrganizations = () => {
         formData.append('imageFile', imageFile);
       }
 
+      formData.append('acceptedTokenSymbol', "SOL");
+
       const response = await dispatch(createCampaign(formData));
 
 

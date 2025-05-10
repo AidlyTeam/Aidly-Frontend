@@ -1,6 +1,8 @@
 import { createContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import authConfig from '@/configs/auth'
+import { useDispatch } from 'react-redux'
+import { getUserInfo } from '@/store/user/userSlice'
 
 const defaultProvider = {
   user: null,
@@ -20,6 +22,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(defaultProvider.user)
   const [loading, setLoading] = useState(defaultProvider.loading)
   const [isInitialized, setIsInitialized] = useState(defaultProvider.isInitialized)
+  const dispatch = useDispatch()
 
   const router = useRouter()
 
@@ -50,6 +53,7 @@ const AuthProvider = ({ children }) => {
 
   const initAuth = async () => {
     setIsInitialized(true)
+    setLoading(true)
 
     try {
       const storedUser = localStorage.getItem(authConfig.userDataName)
@@ -57,13 +61,32 @@ const AuthProvider = ({ children }) => {
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser)
         setUser(parsedUser)
+        
+        // Get user info from API
+        const response = await dispatch(getUserInfo()).unwrap()
+        
+        if (response) {
+          // Update user data with API response
+          const updatedUser = {
+            ...parsedUser,
+            ...response.data
+          }
+          localStorage.setItem(authConfig.userDataName, JSON.stringify(updatedUser))
+          setUser(updatedUser)
+        } else {
+          // If API call fails, log out the user
+          deleteStorage()
+        }
+      } else {
+        // No stored user, redirect to login
+        router.replace('/login')
       }
     } catch (err) {
       console.error('Auth init error:', err)
-      setUser(null)
+      deleteStorage()
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   useEffect(() => {
