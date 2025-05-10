@@ -93,7 +93,7 @@ const navigation = [
     { // single item
         type: "item",
         path: "/donates",
-        title: "All Company",
+        title: "All Campaigns",
         icon: <VolunteerActivismIcon />,
         permission: "home",
     },

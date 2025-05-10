@@ -87,10 +87,25 @@ const EditOrganizations = () => {
         mx: "auto",
         mt: 4,
         color: "#fff",
+        ...(form.statusType === 'urgent' && {
+          boxShadow: "0 0 25px rgba(255,0,0,0.3)",
+          border: "2px solid rgba(255,0,0,0.3)",
+          animation: "urgentPulse 2s infinite",
+        }),
       }}
     >
+      <style>
+        {`
+          @keyframes urgentPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+          }
+        `}
+      </style>
+
       <Typography variant="h5" mb={3} fontWeight="bold" color="secondary">
-        ✏️ Edit Campaign
+        {form.statusType === 'urgent' ? '🚨 Edit Urgent Campaign' : '✏️ Edit Campaign'}
       </Typography>
 
       <Grid container spacing={3}>
@@ -233,9 +248,9 @@ const EditOrganizations = () => {
               />
               <FormControlLabel
                 value="urgent"
-                control={<Radio sx={{ color: 'secondary.main', '&.Mui-checked': { color: 'secondary.main' } }} />}
+                control={<Radio sx={{ color: 'error.main', '&.Mui-checked': { color: 'error.main' } }} />}
                 label="Urgent"
-                sx={{ color: 'secondary.dark' }}
+                sx={{ color: 'error.main' }}
               />
               <FormControlLabel
                 value="critical"
@@ -289,13 +304,25 @@ const EditOrganizations = () => {
           py: 1.5,
           fontWeight: "bold",
           textTransform: "none",
-          background: "linear-gradient(to right, #63f1f9, #72F088)",
+          background: form.statusType === 'urgent' 
+            ? "linear-gradient(to right, #ff0000, #ff6b6b)"
+            : "linear-gradient(to right, #63f1f9, #72F088)",
           color: "#000",
-          boxShadow: "0 0 20px #63f1f9",
+          boxShadow: form.statusType === 'urgent'
+            ? "0 0 20px rgba(255,0,0,0.5)"
+            : "0 0 20px #63f1f9",
           borderRadius: "12px",
+          "&:hover": {
+            background: form.statusType === 'urgent'
+              ? "linear-gradient(to right, #ff0000, #ff6b6b)"
+              : "linear-gradient(to right, #63f1f9, #72F088)",
+            boxShadow: form.statusType === 'urgent'
+              ? "0 0 30px rgba(255,0,0,0.6)"
+              : "0 0 30px #63f1f9",
+          },
         }}
       >
-        Update Campaign
+        {form.statusType === 'urgent' ? 'Update Urgent Campaign' : 'Update Campaign'}
       </Button>
     </Card>
   );

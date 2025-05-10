@@ -174,7 +174,7 @@ const MyOrganizations = () => {
                           label={campaign.status}
                           size="small"
                           sx={{
-                            backgroundColor: campaign.status === 'critical' ? 'error.main' : 'success.main',
+                            backgroundColor: campaign.status === 'urgent' ? 'error.main' : campaign.status === 'critical' ? 'error.main' : 'success.main',
                             color: '#fff',
                             fontWeight: 'bold'
                           }}

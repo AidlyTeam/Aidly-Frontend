@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, Typography, Grid, Card, TextField, RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from "@mui/material";
 import EditedText from "@/components/EditedText/EditedText";
 import Image from "next/image";
@@ -19,6 +19,16 @@ const CreateOrganizations = () => {
     startDate: "",
     endDate: "",
   });
+
+  useEffect(() => {
+    // Check if urgent parameter exists in URL
+    if (router.query.urgent === 'true') {
+      setForm(prev => ({
+        ...prev,
+        statusType: 'urgent'
+      }));
+    }
+  }, [router.query]);
 
   const handleChange = (key) => (e) => {
     setForm({ ...form, [key]: e.target.value });
@@ -57,7 +67,6 @@ const CreateOrganizations = () => {
 
       const response = await dispatch(createCampaign(formData));
 
-
       if (response.meta.requestStatus === "fulfilled") {
         router.push('/profile/my-campaigns');
       }
@@ -75,10 +84,25 @@ const CreateOrganizations = () => {
         mx: "auto",
         mt: 4,
         color: "#fff",
+        ...(form.statusType === 'urgent' && {
+          boxShadow: "0 0 25px rgba(255,0,0,0.3)",
+          border: "2px solid rgba(255,0,0,0.3)",
+          animation: "urgentPulse 2s infinite",
+        }),
       }}
     >
+      <style>
+        {`
+          @keyframes urgentPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+          }
+        `}
+      </style>
+
       <Typography variant="h5" mb={3} fontWeight="bold" color="secondary">
-        🚀 Create a New Web3 Campaign
+        {form.statusType === 'urgent' ? '🚨 Create Urgent Campaign' : '🚀 Create a New Web3 Campaign'}
       </Typography>
 
       <Grid container spacing={3}>
@@ -224,7 +248,7 @@ const CreateOrganizations = () => {
                 value="critical"
                 control={<Radio sx={{ color: 'secondary.main', '&.Mui-checked': { color: 'secondary.main' } }} />}
                 label="Critical"
-                sx={{ color: 'secondary.dark' }}
+                sx={{ color: 'error.main' }}
               />
               <FormControlLabel
                 value="featured"
@@ -272,13 +296,25 @@ const CreateOrganizations = () => {
           py: 1.5,
           fontWeight: "bold",
           textTransform: "none",
-          background: "linear-gradient(to right, #63f1f9, #72F088)",
+          background: form.statusType === 'urgent' 
+            ? "linear-gradient(to right, #ff0000, #ff6b6b)"
+            : "linear-gradient(to right, #63f1f9, #72F088)",
           color: "#000",
-          boxShadow: "0 0 20px #63f1f9",
+          boxShadow: form.statusType === 'urgent'
+            ? "0 0 20px rgba(255,0,0,0.5)"
+            : "0 0 20px #63f1f9",
           borderRadius: "12px",
+          "&:hover": {
+            background: form.statusType === 'urgent'
+              ? "linear-gradient(to right, #ff0000, #ff6b6b)"
+              : "linear-gradient(to right, #63f1f9, #72F088)",
+            boxShadow: form.statusType === 'urgent'
+              ? "0 0 30px rgba(255,0,0,0.6)"
+              : "0 0 30px #63f1f9",
+          },
         }}
       >
-        Launch Campaign
+        {form.statusType === 'urgent' ? 'Launch Urgent Campaign' : 'Launch Campaign'}
       </Button>
     </Card>
   );
