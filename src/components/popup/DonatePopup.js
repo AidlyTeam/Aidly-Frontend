@@ -155,7 +155,7 @@ const DonatePopup = ({ open, onClose, walletAddress, campaignId }) => {
                 variant={selectedAmount === amt ? "contained" : "outlined"}
                 onClick={() => {
                   setSelectedAmount(amt);
-                  setCustomAmount("");
+                  setCustomAmount(amt.toString());
                 }}
                 disabled={isLoading}
               >
