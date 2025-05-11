@@ -149,7 +149,7 @@ const AllDonations = () => {
 
       <Grid container spacing={3}>
         {donationSlice?.data?.data?.donations?.map((donation, index) => (
-          <Grid item xs={12} key={donation.id}>
+          <Grid item xs={12} key={donation?.id}>
             <Fade in timeout={500} style={{ transitionDelay: `${index * 100}ms` }}>
               <Card
                 sx={{
@@ -176,7 +176,7 @@ const AllDonations = () => {
                           gap: 1,
                         }}
                       >
-                        {donation.campaignTitle}
+                        {donation?.campaignTitle}
                         <VerifiedIcon
                           sx={{
                             fontSize: 20,
@@ -194,7 +194,7 @@ const AllDonations = () => {
                           gap: 1,
                         }}
                       >
-                        {formatDate(donation.donationDate)}
+                        {formatDate(donation?.donationDate)}
                       </Typography>
                     </Grid>
 
@@ -220,7 +220,7 @@ const AllDonations = () => {
                             fontWeight: "bold",
                           }}
                         >
-                          {donation.amount}
+                          {donation?.amount}
                           <Image
                             src="/solana-sol-icon.svg"
                             alt="Solana"
@@ -245,7 +245,7 @@ const AllDonations = () => {
                       >
                         <Button
                           variant="outlined"
-                          onClick={() => handleViewOnSolscan(donation.transactionID)}
+                          onClick={() => handleViewOnSolscan(donation?.transactionID)}
                           startIcon={<OpenInNewIcon />}
                           sx={{
                             color: "#0288D1",

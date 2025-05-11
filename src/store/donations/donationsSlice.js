@@ -1,33 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { showToast } from "@/utils/showToast";
 
 const initialState = {
   loading: false,
   error: false,
-  data: [], // donations dizisi doğrudan burada tutuluyor
-};
-
-export const createDonationForCampaign = createAsyncThunk(
-  "donations/createDonation",
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await axios({
-        method: "POST",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/private/donation`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify(data),
-      });
-
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
+  data: {
+    data: {
+      donations: []
     }
   }
-);
+};
 
 export const getDonationsForCampaign = createAsyncThunk(
   "donations/getDonationsForCampaign",
@@ -40,9 +23,31 @@ export const getDonationsForCampaign = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-
+     
       if (response.status === 200) {
-        return response.data; // doğrudan donations dizisi döndüğü varsayılıyor
+        return response.data;
+      }
+    } catch (error) {
+      return rejectWithValue(error.message || error.message);
+    }
+  }
+);
+
+export const createDonationForCampaign = createAsyncThunk(
+  "donations/createDonationForCampaign",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios({
+        method: "POST",
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/private/donation`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify(data),
+      });
+     
+      if (response.status === 200) {
+        return response.data;
       }
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -52,35 +57,44 @@ export const getDonationsForCampaign = createAsyncThunk(
 
 const donationsSlice = createSlice({
   name: "donations",
-  initialState,
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(createDonationForCampaign.pending, (state) => {
-        state.loading = true;
-        state.error = false;
-      })
-      .addCase(createDonationForCampaign.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = [...state.data, action.payload]; // ekleme
-        state.error = false;
-      })
-      .addCase(createDonationForCampaign.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || true;
-      })
       .addCase(getDonationsForCampaign.pending, (state) => {
         state.loading = true;
-        state.error = false;
       })
       .addCase(getDonationsForCampaign.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload; // doğrudan dizi
-        state.error = false;
+        state.data = action.payload;
       })
-      .addCase(getDonationsForCampaign.rejected, (state, action) => {
+      .addCase(getDonationsForCampaign.rejected, (state) => {
+        state.loading = false;
+        state.error = true;
+      })
+      .addCase(createDonationForCampaign.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createDonationForCampaign.fulfilled, (state, action) => {
+        state.loading = false;
+        const newDonation = action.payload?.data || action.payload;
+        if (state.data?.data?.donations) {
+          state.data.data.donations = [...state.data.data.donations, newDonation];
+        } else {
+          state.data = {
+            data: {
+              donations: [newDonation]
+            }
+          };
+        }
+        showToast("dismiss");
+        showToast("success", "Donation created successfully");
+      })
+      .addCase(createDonationForCampaign.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        showToast("dismiss");
+        showToast("error", action.payload);
       });
   },
 });
