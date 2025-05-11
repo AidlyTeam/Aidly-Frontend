@@ -11,7 +11,7 @@ const Home = () => {
     const { campaign: campaignSlice } = useSelector((state) => state);
 
     useEffect(() => {
-        dispatch(getCampaign({ limit: "3" }));
+        dispatch(getCampaign("limit=3"));
     }, [dispatch]);
 
     const donations = Array.isArray(campaignSlice?.data?.data) ? campaignSlice?.data?.data : [];

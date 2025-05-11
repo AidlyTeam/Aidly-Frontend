@@ -1,6 +1,7 @@
 import { showToast } from "@/utils/showToast";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getUserInfo } from "../user/userSlice";
 
 
 const initialState = {
@@ -23,6 +24,7 @@ export const getNFtsMinted = createAsyncThunk(
       });
      
       if (response.status === 200) {
+        dispatch(getUserInfo())
         return response.data;
       }
     } catch (response) {
@@ -39,6 +41,8 @@ const nftsSlice = createSlice({
     builder
       .addCase(getNFtsMinted.pending, (state) => {
         state.loading = true;
+        showToast("dismiss")
+        showToast("loading", "Minting NFTs Please Wait...");
       })
       .addCase(getNFtsMinted.fulfilled, (state, action) => {
         state.loading = false;
@@ -50,7 +54,7 @@ const nftsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         showToast("dismiss")
-        showToast("error", action.payload);
+        showToast("error", "Please try again in 5 minutes");
       })
       
   },

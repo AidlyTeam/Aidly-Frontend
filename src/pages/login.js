@@ -48,7 +48,7 @@ const Login = () => {
       setUser(user);
       setUserData(result.data);
 
-      if (result.data?.role === "first") {
+      if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "" ) {
         setShowUpdateProfile(true);
       } else {
         router.push("/home");
