@@ -3,6 +3,7 @@ import CustomTooltip from "../tooltip";
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const BadgeList = ({ badges }) => {
+  
   const theme = useTheme();
   const palette = theme.palette;
 

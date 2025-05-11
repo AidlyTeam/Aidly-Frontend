@@ -4,19 +4,19 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import AddIcon from "@mui/icons-material/Add";
-import { badgeListColumn } from "@/components/table/column/badgeListColumn";
-import { getBadges } from "@/store/admin/badge";
+import { nftListColumn } from "@/components/table/column/nftListColumn";
+import { getNFTs } from "@/store/admin/nft";
 
-const BadgeList = () => {
+const NFTList = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [page, setPage] = useState(0);
   const dispatch = useDispatch();
   const router = useRouter();
-  const { badge: badgeSlice } = useSelector((state) => state.admin);
-  const badges = badgeSlice?.data?.data?.badges;
+  const { nft: nftSlice } = useSelector((state) => state.admin);
+  const nfts = nftSlice?.data?.data?.badges;
 
   useEffect(() => {
-    dispatch(getBadges());
+    dispatch(getNFTs());
   }, [dispatch]);
 
   const handleRowClick = (id) => {
@@ -25,19 +25,19 @@ const BadgeList = () => {
     );
   };
 
-  const handleAddBadge = () => {
-    router.push("/admin/badge-list/new");
+  const handleAddNFT = () => {
+    router.push("/admin/nft-list/new");
   };
-  
+
 
   return (
     <Box>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom>
-          Badge List
+          NFT List
         </Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          Manage your badges here. You can create, edit, and delete badges.
+          Manage your NFTs here. You can create, edit, and delete NFTs.
         </Typography>
         <Box
           sx={{
@@ -50,28 +50,28 @@ const BadgeList = () => {
             variant="contained"
             color="primary"
             startIcon={<AddIcon />}
-            onClick={handleAddBadge}
+            onClick={handleAddNFT}
           >
-            Add New Badge
+            Add New NFT
           </Button>
         </Box>
       </Box>
       <ClassicTable
-        rows={badges || []}
-        columns={badgeListColumn}
+        rows={nfts || []}
+        columns={nftListColumn}
         pagination={{
           page,
-          pageCount: Math.ceil(badgeSlice?.data?.data?.totalCount / 7),
+          pageCount: Math.ceil(nftSlice?.data?.data?.totalCount / 7),
           setPage,
         }}
         onRowClick={(row) => handleRowClick(row?.id)}
         enableCheckbox
         selectedIds={selectedIds}
         setSelectedIds={setSelectedIds}
-        // loading={loading}
+        loading={nftSlice?.loading}
       />
     </Box>
   );
 };
 
-export default BadgeList;
+export default NFTList; 

@@ -10,6 +10,7 @@ import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import PolylineIcon from '@mui/icons-material/Polyline';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import PaymentsIcon from '@mui/icons-material/Payments';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 /*
     @data structure
     {
@@ -77,6 +78,13 @@ const navigation = [
         path: "/admin/badge-list",
         title: "Badges",
         icon: <EmojiEventsIcon />,
+        permission: "admin",
+    },
+    { // single item
+        type: "item",
+        path: "/admin/nft-list",
+        title: "NFTs",
+        icon: <AutoAwesomeIcon />,
         permission: "admin",
     },
     { 

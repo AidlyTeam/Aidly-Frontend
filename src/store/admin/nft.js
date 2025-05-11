@@ -1,7 +1,6 @@
 import { showToast } from "@/utils/showToast";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { useRouter } from "next/router";
 
 const initialState = {
   loading: false,
@@ -9,18 +8,22 @@ const initialState = {
   data: null,
 };
 
-export const createBadge = createAsyncThunk(
-  "admin/createBadge",
+export const createNFT = createAsyncThunk(
+  "admin/createNFT",
   async (data, { rejectWithValue }) => {
     try {
       const formData = new FormData();
       formData.append('name', data.name);
       formData.append('description', data.description);
-      formData.append('donationThreshold', data.donationThreshold);
-      formData.append('isNft', false);
-      if (data.imageFile) {
-        formData.append('imageFile', data.imageFile);
+      formData.append('imageFile', data.imageFile);
+      formData.append('isNft', data.isNft);
+      
+      if (data.isNft) {
+        formData.append('sellerFee', data.sellerFee);
+        formData.append('symbol', data.symbol);
+        formData.append('donationThreshold', data.donationThreshold);
       }
+      
 
       const response = await axios({
         method: "POST",
@@ -40,13 +43,13 @@ export const createBadge = createAsyncThunk(
   }
 );
 
-export const getBadges = createAsyncThunk(
-  "admin/getBadges",
+export const getNFTs = createAsyncThunk(
+  "admin/getNFTs",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios({
         method: "GET",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/badge?isNft=false`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/badge?isNft=true`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -61,8 +64,8 @@ export const getBadges = createAsyncThunk(
   }
 );
 
-export const getBadgeById = createAsyncThunk(
-  "admin/getBadgeById",
+export const getNFTById = createAsyncThunk(
+  "admin/getNFTById",
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios({
@@ -82,22 +85,29 @@ export const getBadgeById = createAsyncThunk(
   }
 );
 
-export const updateBadge = createAsyncThunk(
-  "admin/updateBadge",
+export const updateNFT = createAsyncThunk(
+  "admin/updateNFT",
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
       formData.append('name', data.name);
       formData.append('description', data.description);
-      formData.append('donationThreshold', data.donationThreshold);
-      formData.append('isNft', false);
+      formData.append('isNft', data.isNft);
+      
       if (data.imageFile) {
         formData.append('imageFile', data.imageFile);
+      }
+      
+      if (data.isNft) {
+        formData.append('sellerFee', data.sellerFee);
+        formData.append('symbol', data.symbol);
+      } else {
+        formData.append('donationThreshold', data.donationThreshold);
       }
 
       const response = await axios({
         method: "PUT",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/badge/${id}`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/nft/${id}`,
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -113,13 +123,13 @@ export const updateBadge = createAsyncThunk(
   }
 );
 
-export const deleteBadge = createAsyncThunk(
-  "admin/deleteBadge",
+export const deleteNFT = createAsyncThunk(
+  "admin/deleteNFT",
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios({
         method: "DELETE",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/badge/${id}`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/nft/${id}`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -134,86 +144,85 @@ export const deleteBadge = createAsyncThunk(
   }
 );
 
-const badgeSlice = createSlice({
-  name: "badges",
+const nftSlice = createSlice({
+  name: "nfts",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(createBadge.pending, (state) => {
+      .addCase(createNFT.pending, (state) => {
         state.loading = true;
         state.error = false;
       })
-      .addCase(createBadge.fulfilled, (state, action) => {
+      .addCase(createNFT.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
         state.error = false;
         showToast("dismiss")
-        showToast("success", "Badge created successfully");
-        
+        showToast("success", "NFT created successfully");
       })
-      .addCase(createBadge.rejected, (state, action) => {
+      .addCase(createNFT.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         showToast("dismiss")
         showToast("error", action.payload);
       })
-      .addCase(getBadges.pending, (state) => {
+      .addCase(getNFTs.pending, (state) => {
         state.loading = true;
         state.error = false;
       })
-      .addCase(getBadges.fulfilled, (state, action) => {
+      .addCase(getNFTs.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
         state.error = false;
       })
-      .addCase(getBadges.rejected, (state, action) => {
+      .addCase(getNFTs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || true;
       })
-      .addCase(getBadgeById.pending, (state) => {
+      .addCase(getNFTById.pending, (state) => {
         state.loading = true;
         state.error = false;
       })
-      .addCase(getBadgeById.fulfilled, (state, action) => {
+      .addCase(getNFTById.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
         state.error = false;
       })
-      .addCase(getBadgeById.rejected, (state, action) => {
+      .addCase(getNFTById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || true;
       })
-      .addCase(updateBadge.pending, (state) => {
+      .addCase(updateNFT.pending, (state) => {
         state.loading = true;
         state.error = false;
         showToast("dismiss")
       })
-      .addCase(updateBadge.fulfilled, (state, action) => {
+      .addCase(updateNFT.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
         state.error = false;
         showToast("dismiss")
-        showToast("success", "Badge updated successfully");
+        showToast("success", "NFT updated successfully");
       })
-      .addCase(updateBadge.rejected, (state, action) => {
+      .addCase(updateNFT.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || true;
         showToast("dismiss")
         showToast("error", action.payload);
       })
-      .addCase(deleteBadge.pending, (state) => {
+      .addCase(deleteNFT.pending, (state) => {
         state.loading = true;
         state.error = false;
       })
-      .addCase(deleteBadge.fulfilled, (state, action) => {
+      .addCase(deleteNFT.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
         state.error = false;
         showToast("dismiss")
-        showToast("success", "Badge deleted successfully");
+        showToast("success", "NFT deleted successfully");
       })
-      .addCase(deleteBadge.rejected, (state, action) => {
+      .addCase(deleteNFT.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || true;
         showToast("dismiss")
@@ -222,4 +231,4 @@ const badgeSlice = createSlice({
   },
 });
 
-export default badgeSlice.reducer;
+export default nftSlice.reducer; 
