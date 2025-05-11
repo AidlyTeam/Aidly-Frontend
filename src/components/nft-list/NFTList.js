@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Card, Typography, Button, Grid } from "@mui/material";
 import Image from "next/image";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import TokenIcon from "@mui/icons-material/Token";
+import { useDispatch } from "react-redux";
+import { getNFtsMinted } from "@/store/nfts/nftSlice";
 
 const NoNFTsFound = () => (
   <Box
@@ -67,7 +69,16 @@ const NoNFTsFound = () => (
 );
 
 const NFTList = ({ nfts }) => {
-  console.log(nfts);
+  const dispatch = useDispatch();
+  const [hoveredNFT, setHoveredNFT] = useState(null);
+
+  const handleClaimNFT = async (nftId) => {
+    try {
+      await dispatch(getNFtsMinted({ id: nftId })).unwrap();
+    } catch (error) {
+      console.error("Error claiming NFT:", error);
+    }
+  };
 
   return (
     <Box
@@ -118,6 +129,15 @@ const NFTList = ({ nfts }) => {
             50% { transform: scale(1.1); opacity: 0.9; }
             100% { transform: scale(1); opacity: 0.7; }
           }
+          @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(99, 241, 249, 0.5), 0 0 10px rgba(114, 240, 136, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(99, 241, 249, 0.8), 0 0 30px rgba(114, 240, 136, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(99, 241, 249, 0.5), 0 0 10px rgba(114, 240, 136, 0.5); }
+          }
+          @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+          }
         `}
       </style>
 
@@ -128,6 +148,8 @@ const NFTList = ({ nfts }) => {
           {nfts.map((nft, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
               <Card
+                onMouseEnter={() => setHoveredNFT(nft.id)}
+                onMouseLeave={() => setHoveredNFT(null)}
                 sx={{
                   p: 2,
                   borderRadius: 2,
@@ -139,21 +161,9 @@ const NFTList = ({ nfts }) => {
                   position: "relative",
                   overflow: "hidden",
                   animation: `slideUp 0.5s ease-out ${index * 0.1}s both`,
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    opacity: 0,
-                    transition: "opacity 0.3s ease-in-out",
-                  },
                   "&:hover": {
                     transform: "translateY(-5px)",
-                    "&::before": {
-                      opacity: 1,
-                    },
+                    animation: "glow 2s infinite",
                   },
                 }}
               >
@@ -171,6 +181,8 @@ const NFTList = ({ nfts }) => {
                     justifyContent: "center",
                     background:
                       "linear-gradient(45deg, rgba(99, 241, 249, 0.1) 30%, rgba(114, 240, 136, 0.1) 90%)",
+                    filter: !nft.isMinted ? "blur(4px)" : "none",
+                    transition: "all 0.3s ease-in-out",
                   }}
                 >
                   <img
@@ -223,7 +235,6 @@ const NFTList = ({ nfts }) => {
                       sx={{
                         display: "flex",
                         alignItems: "center",
-                        
                         width: 24,
                         height: 24,
                       }}
@@ -237,40 +248,73 @@ const NFTList = ({ nfts }) => {
                     </Box>
                   </Typography>
                 </Box>
+
+                {!nft.isMinted && hoveredNFT === nft.id && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "linear-gradient(135deg, rgba(99, 241, 249, 0.2) 0%, rgba(114, 240, 136, 0.2) 100%)",
+                      backdropFilter: "blur(8px)",
+                      zIndex: 2,
+                      animation: "fadeIn 0.3s ease-in-out",
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
+                        animation: "shimmer 2s infinite",
+                      },
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={() => handleClaimNFT(nft.id)}
+                      sx={{
+                        background: "linear-gradient(45deg, #63f1f9 30%, #72F088 90%)",
+                        color: "#000",
+                        padding: "12px 32px",
+                        borderRadius: "12px",
+                        fontSize: "1.1rem",
+                        fontWeight: "bold",
+                        boxShadow: "0 0 20px rgba(99, 241, 249, 0.5)",
+                        position: "relative",
+                        overflow: "hidden",
+                        "&::before": {
+                          content: '""',
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
+                          animation: "shimmer 2s infinite",
+                        },
+                        "&:hover": {
+                          background: "linear-gradient(45deg, #63f1f9 40%, #72F088 100%)",
+                          boxShadow: "0 0 30px rgba(99, 241, 249, 0.7)",
+                          transform: "scale(1.05)",
+                        },
+                      }}
+                    >
+                      Claim Your NFT
+                    </Button>
+                  </Box>
+                )}
               </Card>
             </Grid>
           ))}
         </Grid>
       )}
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "end",
-        }}
-      >
-        <Button
-          variant="contained"
-          sx={{
-            background: "linear-gradient(45deg, #63f1f9 30%, #72F088 90%)",
-            color: "#000",
-            padding: "12px 32px",
-            borderRadius: "12px",
-            fontSize: "1.1rem",
-            fontWeight: "bold",
-            boxShadow: "0 0 20px rgba(99, 241, 249, 0.5)",
-            zIndex: 1000,
-            animation: "fadeIn 0.5s ease-in-out",
-            "&:hover": {
-              background: "linear-gradient(45deg, #63f1f9 40%, #72F088 100%)",
-              boxShadow: "0 0 30px rgba(99, 241, 249, 0.7)",
-            },
-            marginTop: "20px",
-          }}
-        >
-          Claim Your NFT
-        </Button>
-      </Box>
     </Box>
   );
 };
