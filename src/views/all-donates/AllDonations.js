@@ -17,7 +17,6 @@ import Image from "next/image";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import WavesIcon from "@mui/icons-material/Waves";
 import VerifiedIcon from "@mui/icons-material/Verified";
-import { useRouter } from "next/router";
 
 const AllDonations = () => {
   const dispatch = useDispatch();
@@ -48,8 +47,9 @@ const AllDonations = () => {
     }
   };
 
-  const router = useRouter();
-
+  const handleViewOnSolscan = (transactionId) => {
+    window.open(`https://solscan.io/tx/${transactionId}?cluster=devnet`, '_blank', 'noopener,noreferrer');
+  };
 
   if (donationSlice.loading) {
     return (
@@ -67,7 +67,7 @@ const AllDonations = () => {
   }
 
   return (
-    <Box >
+    <Box>
       <style>
         {`
           @keyframes float {
@@ -145,8 +145,6 @@ const AllDonations = () => {
             </Typography>
           </Box>
         </Box>
-
-   
       </Paper>
 
       <Grid container spacing={3}>
@@ -162,18 +160,7 @@ const AllDonations = () => {
                   transition: "all 0.3s ease",
                   position: "relative",
                   overflow: "hidden",
-               
-                  "&::after": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: "linear-gradient(135deg, rgba(114, 240, 136, 0.05) 0%, rgba(99, 241, 249, 0.05) 100%)",
-                    opacity: 0,
-                    transition: "opacity 0.3s ease",
-                  },
+                
                 }}
               >
                 <CardContent>
@@ -257,27 +244,21 @@ const AllDonations = () => {
                         }}
                       >
                         <Button
-                          onClick={() => router.push(`https://solscan.io/tx/${donation.transactionID}`)}
+                          variant="outlined"
+                          onClick={() => handleViewOnSolscan(donation.transactionID)}
+                          startIcon={<OpenInNewIcon />}
                           sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 0.5,
                             color: "#0288D1",
-                            textDecoration: "none",
-                            padding: "8px 16px",
-                            borderRadius: 2,
-                            background: "rgba(99, 241, 249, 0.1)",
-                            border: "1px solid rgba(99, 241, 249, 0.2)",
-                            transition: "all 0.3s ease",
-                            cursor: "pointer",
+                            borderColor: "rgba(99, 241, 249, 0.2)",
+                            backgroundColor: "rgba(99, 241, 249, 0.1)",
                             "&:hover": {
-                              background: "rgba(99, 241, 249, 0.2)",
+                              backgroundColor: "rgba(99, 241, 249, 0.2)",
+                              borderColor: "rgba(99, 241, 249, 0.3)",
                               transform: "translateY(-2px)",
                               boxShadow: "0 4px 12px rgba(2, 136, 209, 0.2)",
                             },
                           }}
                         >
-                          <OpenInNewIcon fontSize="small" />
                           View on Solscan
                         </Button>
                       </Box>
