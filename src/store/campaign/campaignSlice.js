@@ -182,7 +182,7 @@ export const isValidCampaign = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios({
-        method: "POST",
+        method: "GET",
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/private/campaign/${data}/isValid`,
         headers: {
           "Content-Type": "application/json",
