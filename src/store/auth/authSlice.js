@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { data } from "autoprefixer";
 import axios from "axios";
 
 
@@ -31,6 +32,29 @@ export const postAuth = createAsyncThunk(
   }
 );
 
+export const civicAuth = createAsyncThunk(
+  "auth/civicAuth",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios({
+        method: "POST",
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/public/auth/civic`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify(data),
+      });
+      console.log("Response:", response);
+      console.log("Response Data:", response.data);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (response) {
+      return rejectWithValue(response.message || error.message);
+    }
+  }
+)
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -48,7 +72,18 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = true;
       })
-      
+      .addCase(civicAuth.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(civicAuth.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(civicAuth.rejected, (state) => {
+        state.loading = false;
+        state.error = true;
+      })
+
   },
 });
 
