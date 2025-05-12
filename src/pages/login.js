@@ -4,20 +4,21 @@ import { useRouter } from "next/router";
 import { Button, Typography, Container, Box } from "@mui/material";
 import Image from "next/image";
 import logo from "../assets/logo/Adsız tasarım.png";
-import { postAuth } from "@/store/auth/authSlice";
+import { postAuth, civicAuth } from "@/store/auth/authSlice";
 import { useDispatch } from "react-redux";
-import bs58 from 'bs58';
+import bs58 from "bs58";
 import UpdateProfile from "@/components/popup/UpdateProfile";
-import { useUser } from "@civic/auth/react"
+import { useUser } from "@civic/auth/react";
 
 const Login = () => {
-  const { user, signIn, signOut, authStatus } = useUser()
+  const { user, signIn, signOut, authStatus } = useUser();
   const { setUser } = useContext(AuthContext);
   const router = useRouter();
   const dispatch = useDispatch();
   const [showUpdateProfile, setShowUpdateProfile] = useState(false);
   const [userData, setUserData] = useState(null);
 
+  // Function for Phantom Wallet login
   const connectPhantom = async () => {
     if (!window.solana?.isPhantom) {
       alert("Phantom wallet not found. Please install the Phantom extension.");
@@ -38,7 +39,7 @@ const Login = () => {
         signatureBase58,
         walletAddress,
       };
-      console.log("Payload:", payload);
+
       const result = await dispatch(postAuth(payload)).unwrap();
 
       const user = {
@@ -60,12 +61,40 @@ const Login = () => {
     }
   };
 
+  // Profile update handler
   const handleProfileUpdate = () => {
     setShowUpdateProfile(false);
     router.push("/home");
   };
 
-  console.log(user)
+  // Function for Civic login //TODO:
+  const connectWithCivic = async () => {
+    try {
+      const payload = {
+        fullName: user.name,
+        email: user.email,
+      };
+
+      const result = await dispatch(civicAuth(payload)).unwrap();
+
+      const user = {
+        ...result,
+        role: result?.data?.role,
+      };
+
+      localStorage.setItem("userData", JSON.stringify(user));
+      setUser(user);
+      setUserData(result.data);
+
+      if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
+        setShowUpdateProfile(true);
+      } else {
+        router.push("/home");
+      }
+    } catch (err) {
+      console.error("Civic connection error:", err);
+    }
+  };
 
   return (
     <Box
@@ -171,7 +200,9 @@ const Login = () => {
           </Button>
           <Button
             variant="contained"
-            onClick={() => signIn()}
+            onClick={() => {
+              signIn();
+            }}
             sx={{
               px: 4,
               py: 1.5,
