@@ -27,6 +27,9 @@ import ThemeComponent from '@/layout/ThemeComponent'
 import WindowWrapper from '@/components/window-wrapper'
 import AclGuard from '@/layout/auth/AclGuard'
 
+// Civic
+import { CivicAuthProvider } from "@civic/auth/react";
+
 // ** Pace Loader
 if (themeConfig.routingLoader) {
   Router.events.on('routeChangeStart', () => {
@@ -50,6 +53,19 @@ const Guard = ({ children, authGuard, guestGuard }) => {
   }
 }
 
+// ✅ Civic callbacks
+const onSignIn = (error) => {
+  if (error) {
+    console.error("❌ Sign-in error:", error)
+  } else {
+    console.log("✅ User signed in successfully!")
+  }
+}
+
+const onSignOut = () => {
+  console.log("👋 User signed out")
+}
+
 // ** Configure JSS & ClassName
 const App = props => {
   const { Component, pageProps } = props
@@ -68,21 +84,29 @@ const App = props => {
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
 
-      <AuthProvider>
-        <ThemeComponent>
-          <WindowWrapper>
-            <Guard authGuard={authGuard} guestGuard={guestGuard}>
-              <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
-                {getLayout(<Component {...pageProps} />)}
-              </AclGuard>
-            </Guard>
-          </WindowWrapper>
+      <CivicAuthProvider
+        clientId="4a81963e-17a0-4e7b-9a5a-56314748c6d7"
+        iframeMode="embedded"
+        displayMode="new_tab"
+        onSignIn={onSignIn}
+        onSignOut={onSignOut}
+      >
+        <AuthProvider>
+          <ThemeComponent>
+            <WindowWrapper>
+              <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
+                  {getLayout(<Component {...pageProps} />)}
+                </AclGuard>
+              </Guard>
+            </WindowWrapper>
 
-          <ReactHotToast>
-            <Toaster position={themeConfig.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
-          </ReactHotToast>
-        </ThemeComponent>
-      </AuthProvider>
+            <ReactHotToast>
+              <Toaster position={themeConfig.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+            </ReactHotToast>
+          </ThemeComponent>
+        </AuthProvider>
+      </CivicAuthProvider>
     </Provider>
   )
 }
