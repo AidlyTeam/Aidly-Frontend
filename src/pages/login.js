@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { Button, Typography, Container, Box } from "@mui/material";
@@ -8,8 +8,10 @@ import { postAuth } from "@/store/auth/authSlice";
 import { useDispatch } from "react-redux";
 import bs58 from 'bs58';
 import UpdateProfile from "@/components/popup/UpdateProfile";
+import { useUser } from "@civic/auth/react"
 
 const Login = () => {
+  const { user, signIn, signOut, authStatus } = useUser()
   const { setUser } = useContext(AuthContext);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -48,7 +50,7 @@ const Login = () => {
       setUser(user);
       setUserData(result.data);
 
-      if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "" ) {
+      if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
         setShowUpdateProfile(true);
       } else {
         router.push("/home");
@@ -62,6 +64,8 @@ const Login = () => {
     setShowUpdateProfile(false);
     router.push("/home");
   };
+
+  console.log(user)
 
   return (
     <Box
@@ -142,28 +146,52 @@ const Login = () => {
           Connect your Phantom wallet to access the app. Don't have one? Get it from the official site.
         </Typography>
 
-        <Button
-          variant="contained"
-          onClick={connectPhantom}
-          sx={{
-            px: 4,
-            py: 1.5,
-            fontSize: "1rem",
-            fontWeight: "bold",
-            textTransform: "none",
-            borderRadius: "12px",
-            background: "linear-gradient(to right, #63f1f9, #72F088)",
-            color: "#000",
-            boxShadow: "0 0 20px #63f1f9",
-            transition: "transform 0.3s",
-            "&:hover": {
-              transform: "scale(1.05)",
-              boxShadow: "0 0 25px #72F088",
-            },
-          }}
-        >
-          Connect Phantom
-        </Button>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "20px" }}>
+          <Button
+            variant="contained"
+            onClick={connectPhantom}
+            sx={{
+              px: 4,
+              py: 1.5,
+              fontSize: "1rem",
+              fontWeight: "bold",
+              textTransform: "none",
+              borderRadius: "12px",
+              background: "linear-gradient(to right, #63f1f9, #72F088)",
+              color: "#000",
+              boxShadow: "0 0 20px #63f1f9",
+              transition: "transform 0.3s",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: "0 0 25px #72F088",
+              },
+            }}
+          >
+            Connect Phantom
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => signIn()}
+            sx={{
+              px: 4,
+              py: 1.5,
+              fontSize: "1rem",
+              fontWeight: "bold",
+              textTransform: "none",
+              borderRadius: "12px",
+              background: "linear-gradient(to right, #63f1f9, #72F088)",
+              color: "#000",
+              boxShadow: "0 0 20px #63f1f9",
+              transition: "transform 0.3s",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: "0 0 25px #72F088",
+              },
+            }}
+          >
+            Connect With Civic
+          </Button>
+        </Box>
       </Container>
 
       <UpdateProfile
