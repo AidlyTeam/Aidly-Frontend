@@ -16,14 +16,15 @@ const UpdateProfile = ({ open, onClose, isDefault = true }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleUpdate = async () => {
-    if (!name || !surname) {
-      alert("Please fill in the name and surname fields.");
+    if (!name || !surname || !email) {
+      alert("Please fill in the name, surname and email fields.");
       return;
     }
   
-    const payload = { name, surname };
+    const payload = { name, surname, email };
   
     try {
       await dispatch(updateProfile(payload)).unwrap();
@@ -68,6 +69,12 @@ const UpdateProfile = ({ open, onClose, isDefault = true }) => {
             label="Surname"
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
+            required
+          />
+          <EditedText
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </Stack>

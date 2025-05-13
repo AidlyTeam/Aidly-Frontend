@@ -21,8 +21,7 @@ export const postAuth = createAsyncThunk(
         },
         data: JSON.stringify(data),
       });
-      console.log("Response:", response);
-      console.log("Response Data:", response.data);
+      
       if (response.status === 200) {
         return response.data;
       }

@@ -2,7 +2,6 @@ import { showToast } from "@/utils/showToast";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-
 const initialState = {
   loading: false,
   error: false,
@@ -11,7 +10,7 @@ const initialState = {
 
 export const updateProfile = createAsyncThunk(
   "user/updateProfile",
-  async (data, { rejectWithValue,dispatch }) => {
+  async (data, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios({
         method: "POST",
@@ -21,14 +20,13 @@ export const updateProfile = createAsyncThunk(
         },
         data: JSON.stringify(data),
       });
-      console.log(response);
-     
+
       if (response.status === 200) {
         dispatch(getUserInfo());
         return response.data;
       }
-    } catch (response) {
-      return rejectWithValue(error.response?.data?.message|| error.message);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -45,8 +43,30 @@ export const getUserInfo = createAsyncThunk(
         },
         data: JSON.stringify(data),
       });
-     
+
       if (response.status === 200) {
+        return response.data;
+      }
+    } catch (response) {
+      return rejectWithValue(response.message || error.message);
+    }
+  }
+);
+
+export const connectWallet = createAsyncThunk(
+  "user/connectWallet",
+  async (data, { rejectWithValue,dispatch }) => {
+    try {
+      const response = await axios({
+        method: "POST",
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/private/user/connect`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify(data),
+      });
+      if (response.status === 200) {
+        dispatch(getUserInfo());
         return response.data;
       }
     } catch (response) {
@@ -66,13 +86,13 @@ const userSlice = createSlice({
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
-        showToast("dismiss")
+        showToast("dismiss");
         showToast("success", "Profile updated successfully");
       })
-      .addCase(updateProfile.rejected, (state,action) => {
+      .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        showToast("dismiss")
+        showToast("dismiss");
         showToast("error", action.payload);
       })
       .addCase(getUserInfo.pending, (state) => {
@@ -86,6 +106,17 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = true;
       })
+      .addCase(connectWallet.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(connectWallet.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(connectWallet.rejected, (state) => {
+        state.loading = false;
+        state.error = true;
+      });
       
   },
 });
