@@ -59,13 +59,13 @@ const navigation = [
         type: "divider",
         permission: "admin",
     },
-    { // single item
-        type: "item",
-        path: "/admin/user-list",
-        title: "Users",
-        icon: <PeopleAltIcon />,
-        permission: "admin",
-    },
+    // { // single item
+    //     type: "item",
+    //     path: "/admin/user-list",
+    //     title: "Users",
+    //     icon: <PeopleAltIcon />,
+    //     permission: "admin",
+    // },
     { // single item
         type: "item",
         path: "/admin/campaigns-list",

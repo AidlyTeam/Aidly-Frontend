@@ -9,9 +9,11 @@ import {
   Stack,
   LinearProgress,
   Button,
+  Tooltip,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import VerifiedIcon from "@mui/icons-material/Verified";
+import InfoIcon from "@mui/icons-material/Info";
 import { theme } from "@/configs/theme";
 import Avatar from "@mui/material/Avatar";
 import AvatarGroup from "@mui/material/AvatarGroup";
@@ -19,7 +21,7 @@ import DonatePopup from "../popup/DonatePopup";
 import { useState } from "react";
 import Image from "next/image";
 
-const DonateDetailPagesCard = ({ donateDetails = [] }) => {
+const DonateDetailPagesCard = ({ donateDetails = [], haveWallet = false }) => {
   const progress = (donateDetails.raised / donateDetails.goal) * 100;
 
   const getProgressGradient = (progress) => {
@@ -236,49 +238,78 @@ const DonateDetailPagesCard = ({ donateDetails = [] }) => {
               width: "97%",
             }}
           >
-            <Button
-              variant="contained"
-              ü
-              onClick={handleDonateClick}
-              sx={{
-                marginLeft: "auto",
-                marginRight: "0",
-                fontSize: "16px",
-                padding: "8px 36px",
-                borderRadius: "12px",
-                background: "linear-gradient(135deg, #72F088 0%, #63f1f9 100%)",
-                color: "#ffff",
-                textTransform: "none",
-                fontWeight: "bold",
-                boxShadow: `0 0 20px ${theme.palette.primary.main}`,
-                position: "relative",
-                overflow: "hidden",
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  boxShadow: "0 0 30px rgba(0, 255, 163, 0.6)",
-                },
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: "-75%",
-                  width: "50%",
-                  height: "100%",
-                  background:
-                    "linear-gradient(120deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%)",
-                  transform: "skewX(-20deg)",
-                  animation: "shine 2.5s infinite",
-                },
-                "@keyframes shine": {
-                  "0%": { left: "-75%" },
-                  "50%": { left: "125%" },
-                  "100%": { left: "125%" },
-                },
-              }}
-            >
-              Donate Now
-            </Button>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%', justifyContent: 'flex-end' }}>
+              {!haveWallet && (
+                <Tooltip 
+                  title="No wallet connected. Please connect your wallet from profile to donate." 
+                  arrow
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        bgcolor: 'white',
+                        color: 'text.secondary',
+                        boxShadow: 3,
+                        '& .MuiTooltip-arrow': {
+                          color: 'white',
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <InfoIcon 
+                    sx={{ 
+                      color: theme.palette.error.main,
+                      cursor: 'pointer',
+                    }} 
+                  />
+                </Tooltip>
+              )}
+              <Button
+                variant="contained"
+                disabled={!haveWallet}
+                onClick={handleDonateClick}
+                sx={{
+                  fontSize: "16px",
+                  padding: "8px 36px",
+                  borderRadius: "12px",
+                  background: haveWallet 
+                    ? "linear-gradient(135deg, #72F088 0%, #63f1f9 100%)"
+                    : "linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%)",
+                  color: "#ffff",
+                  textTransform: "none",
+                  fontWeight: "bold",
+                  boxShadow: haveWallet 
+                    ? `0 0 20px ${theme.palette.primary.main}`
+                    : 'none',
+                  position: "relative",
+                  overflow: "hidden",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  "&:hover": {
+                    transform: haveWallet ? "scale(1.05)" : "none",
+                    boxShadow: haveWallet ? "0 0 30px rgba(0, 255, 163, 0.6)" : "none",
+                  },
+                  "&::before": haveWallet ? {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: "-75%",
+                    width: "50%",
+                    height: "100%",
+                    background:
+                      "linear-gradient(120deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%)",
+                    transform: "skewX(-20deg)",
+                    animation: "shine 2.5s infinite",
+                  } : {},
+                  "@keyframes shine": {
+                    "0%": { left: "-75%" },
+                    "50%": { left: "125%" },
+                    "100%": { left: "125%" },
+                  },
+                }}
+              >
+                {haveWallet ? "Donate Now" : "Connect Wallet to Donate"}
+              </Button>
+            </Box>
           </Box>
         </Card>
       </Grid>
