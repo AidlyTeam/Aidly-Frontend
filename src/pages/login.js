@@ -18,6 +18,7 @@ const Login = () => {
   const [showUpdateProfile, setShowUpdateProfile] = useState(false);
   const [userData, setUserData] = useState(null);
 
+
   // Function for Phantom Wallet login
   const connectPhantom = async () => {
     if (!window.solana?.isPhantom) {
@@ -50,6 +51,7 @@ const Login = () => {
       localStorage.setItem("userData", JSON.stringify(user));
       setUser(user);
       setUserData(result.data);
+      
 
       if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
         setShowUpdateProfile(true);
@@ -67,7 +69,6 @@ const Login = () => {
     router.push("/home");
   };
 
-  // Function for Civic login //TODO:
   const connectWithCivic = async () => {
     try {
       const payload = {
@@ -77,24 +78,38 @@ const Login = () => {
 
       const result = await dispatch(civicAuth(payload)).unwrap();
 
-      const user = {
+      const userMap = {
         ...result,
         role: result?.data?.role,
       };
+      console.log("result", result);
+      console.log("userMap", userMap);
 
-      localStorage.setItem("userData", JSON.stringify(user));
-      setUser(user);
+      localStorage.setItem("userData", JSON.stringify(userMap));
+      setUser(userMap);
       setUserData(result.data);
-
       if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
         setShowUpdateProfile(true);
       } else {
+       
         router.push("/home");
       }
     } catch (err) {
       console.error("Civic connection error:", err);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      connectWithCivic();
+    }
+    
+  }, [user]);
+
+ 
+
+ 
+
 
   return (
     <Box

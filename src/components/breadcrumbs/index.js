@@ -11,10 +11,26 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CustomTooltip from "../tooltip";
 import { useRouter } from "next/router";
+import { useUser } from "@civic/auth/react";
+import { showToast } from "@/utils/showToast";
 
 const CustomBreadcrumbs = ({ titles }) => {
-  const { logout, user } = useAuth();
+  const { user, setUser, setLoading, setIsInitialized } = useAuth();
   const router = useRouter();
+  const { signOut } = useUser();
+
+  const handleLogout = () => {
+    localStorage.removeItem("userData");
+    setUser(null);
+    setLoading(false);
+    setIsInitialized(false);
+    signOut();
+    showToast("dismiss" );
+    showToast("loading", "Leaving the app");
+    router.replace("/login");
+
+  };
+
   return (
     <Box
       sx={{
@@ -86,10 +102,10 @@ const CustomBreadcrumbs = ({ titles }) => {
         )}
       </Breadcrumbs>
       {user && (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <CustomTooltip title="Settings">
             <IconButton
-              onClick={() => router.push('/profile/info')}
+              onClick={() => router.push("/profile/info")}
               sx={{
                 mr: { xs: 1, sm: 1, md: 1 },
                 mt: { xs: 1, sm: 0 },
@@ -104,7 +120,7 @@ const CustomBreadcrumbs = ({ titles }) => {
           </CustomTooltip>
           <CustomTooltip title="Logout">
             <IconButton
-              onClick={logout}
+              onClick={handleLogout}
               sx={{
                 mr: { xs: 2, sm: 1, md: 0 },
                 mt: { xs: 1, sm: 0 },
