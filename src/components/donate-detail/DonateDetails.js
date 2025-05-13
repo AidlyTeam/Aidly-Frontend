@@ -209,7 +209,9 @@ const DonateDetailPagesCard = ({ donateDetails = [], haveWallet = false }) => {
               </Box>
               <LinearProgress
                 variant="determinate"
-                value={progress}
+                value={ (Number(donateDetails.raisedAmount) /
+                  Number(donateDetails.targetAmount)) *
+                100}
                 sx={{
                   height: 10,
                   borderRadius: 5,

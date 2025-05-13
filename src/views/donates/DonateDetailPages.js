@@ -30,7 +30,7 @@ const DonateDetailPages = () => {
 
   return (
     <Box sx={{ width: '100%', maxWidth: '1200px', mx: 'auto', px: 2 }}>
-      <DonateDetailPagesCard donateDetails={campaignData} haveWallet={userData.walletAddress ? true : false} />
+      <DonateDetailPagesCard donateDetails={campaignData} haveWallet={userData?.walletAddress ? true : false} />
     </Box>
   )
 }
