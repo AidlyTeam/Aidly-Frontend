@@ -1,7 +1,7 @@
+import { showToast } from "@/utils/showToast";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { data } from "autoprefixer";
 import axios from "axios";
-
 
 const initialState = {
   loading: false,
@@ -53,8 +53,7 @@ export const civicAuth = createAsyncThunk(
       return rejectWithValue(response.message || error.message);
     }
   }
-)
-
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -82,8 +81,7 @@ const authSlice = createSlice({
       .addCase(civicAuth.rejected, (state) => {
         state.loading = false;
         state.error = true;
-      })
-
+      });
   },
 });
 

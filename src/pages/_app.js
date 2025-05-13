@@ -86,8 +86,7 @@ const App = props => {
 
       <CivicAuthProvider
         clientId="4a81963e-17a0-4e7b-9a5a-56314748c6d7"
-        iframeMode="embedded"
-        displayMode="new_tab"
+        displayMode="redirect"
         onSignIn={onSignIn}
         onSignOut={onSignOut}
       >
