@@ -6,7 +6,6 @@ import { connectWallet, updateProfile } from "@/store/user/userSlice";
 import { useDispatch } from "react-redux";
 import bs58 from "bs58";
 
-
 const PersonalInfoForm = ({ initialData = {} }) => {
   const [formData, setFormData] = useState({
     name: initialData?.name,
@@ -40,6 +39,7 @@ const PersonalInfoForm = ({ initialData = {} }) => {
         walletAddress,
       };
 
+
       const result = await dispatch(connectWallet(payload)).unwrap();
       console.log(result);
     } catch (err) {
@@ -51,6 +51,7 @@ const PersonalInfoForm = ({ initialData = {} }) => {
     setFormData({
       name: initialData?.name,
       surname: initialData?.surname,
+      email: initialData?.email,
     });
   }, [initialData]);
 
@@ -101,6 +102,7 @@ const PersonalInfoForm = ({ initialData = {} }) => {
             value={formData.email}
             onChange={handleChange}
             required
+            disabled
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -126,7 +128,6 @@ const PersonalInfoForm = ({ initialData = {} }) => {
           Save changes
         </Button>
         <Button
-          type="submit"
           variant="contained"
           color="primary"
           onClick={handleConnectWallet}
