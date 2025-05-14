@@ -27,28 +27,28 @@ const navigation = [
     { // item with children
         type: "item",
         title: "Profile",
-        permission: "team",
+        permission: "home",
         icon: <Person3Icon />,
         children: [
             {
                 type: "item",
                 path: "/profile/info",
                 title: "My Info",
-                permission: "team-members",
+                permission: "home",
                 icon: <SettingsAccessibilityIcon />,
             },
             {
                 type: "item",
                 path: "/profile/my-campaigns",
                 title: "My Campaigns",
-                permission: "team-members",
+                permission: "home",
                 icon: <PolylineIcon />,
             },
             {
                 type: "item",
                 path: "/profile/my-donates",
                 title: "My Donates",
-                permission: "team-members",
+                permission: "home",
                 icon: <LoyaltyIcon />,
             },
         

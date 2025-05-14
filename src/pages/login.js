@@ -23,19 +23,34 @@ const Login = () => {
   // Check if we're on the client side and if Phantom is available
   useEffect(() => {
     setIsClient(true);
-    const checkPhantomAvailability = () => {
-      const isPhantomInstalled = 
-        typeof window !== 'undefined' && 
-        window.solana && 
-        window.solana.isPhantom;
-      setIsPhantomAvailable(isPhantomInstalled);
-    };
     
-    checkPhantomAvailability();
+    // Wait a moment for Phantom to initialize in the browser
+    const timeoutId = setTimeout(() => {
+      const checkPhantomAvailability = () => {
+        const isPhantomInstalled = 
+          typeof window !== 'undefined' && 
+          window.solana && 
+          window.solana.isPhantom;
+        
+        console.log("Phantom wallet detection:", { 
+          isPhantomInstalled, 
+          windowExists: typeof window !== 'undefined',
+          solanaExists: typeof window !== 'undefined' && !!window.solana
+        });
+        
+        setIsPhantomAvailable(isPhantomInstalled);
+      };
+      
+      checkPhantomAvailability();
+      
+      // Check again after a brief delay to account for delayed injection
+      window.addEventListener('load', checkPhantomAvailability);
+      return () => {
+        window.removeEventListener('load', checkPhantomAvailability);
+      };
+    }, 500); // Small delay to ensure DOM is fully loaded
     
-    // Add event listener for when Phantom is injected after page load
-    window.addEventListener('load', checkPhantomAvailability);
-    return () => window.removeEventListener('load', checkPhantomAvailability);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   // Function for Phantom Wallet login
@@ -46,18 +61,29 @@ const Login = () => {
       return;
     }
 
+    console.log("Connect Phantom button clicked");
+    
+    // Force re-check Phantom availability
+    const isPhantomInstalled = window.solana && window.solana.isPhantom;
+    console.log("Phantom availability on click:", isPhantomInstalled);
+    
     // Check if Phantom is installed
-    if (!window.solana?.isPhantom) {
+    if (!isPhantomInstalled) {
+      console.log("Phantom not detected, redirecting to installation page");
       window.open("https://phantom.app/", "_blank");
       alert("Phantom wallet not found. Please install the Phantom extension and refresh the page.");
       return;
     }
 
     try {
+      console.log("Attempting to connect to Phantom...");
       const resp = await window.solana.connect();
+      console.log("Connection successful:", resp);
       const walletAddress = resp.publicKey.toString();
       const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
       const encodedMessage = new TextEncoder().encode(message);
+      
+      console.log("Requesting message signing...");
       const signed = await window.solana.signMessage(encodedMessage, "utf8");
 
       const signatureBase58 = bs58.encode(signed.signature);
@@ -68,7 +94,9 @@ const Login = () => {
         walletAddress,
       };
 
+      console.log("Sending auth request to backend...");
       const result = await dispatch(postAuth(payload)).unwrap();
+      console.log("Auth response:", result);
 
       const user = {
         ...result,
@@ -79,7 +107,6 @@ const Login = () => {
       setUser(user);
       setUserData(result.data);
       
-
       if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
         setShowUpdateProfile(true);
       } else {
@@ -87,7 +114,12 @@ const Login = () => {
       }
     } catch (err) {
       console.error("Phantom connection error:", err);
-      alert("Failed to connect to Phantom wallet. Please make sure it's installed and unlocked.");
+      // More specific error messages based on error type
+      if (err.code === 4001) {
+        alert("Connection rejected. Please approve the connection request in your Phantom wallet.");
+      } else {
+        alert("Failed to connect to Phantom wallet. Please make sure it's installed and unlocked.");
+      }
     }
   };
 
@@ -225,7 +257,10 @@ const Login = () => {
           {isClient && !isPhantomAvailable ? (
             <Button
               variant="contained"
-              onClick={() => window.open("https://phantom.app/", "_blank")}
+              onClick={() => {
+                console.log("Install button clicked");
+                window.open("https://phantom.app/", "_blank");
+              }}
               sx={{
                 px: 4,
                 py: 1.5,
