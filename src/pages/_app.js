@@ -1,3 +1,4 @@
+
 // ** Next Imports
 import Head from 'next/head'
 import { Router } from 'next/router'
@@ -29,6 +30,7 @@ import AclGuard from '@/layout/auth/AclGuard'
 
 // Civic
 import { CivicAuthProvider } from "@civic/auth/react";
+import { useState, useEffect } from 'react'
 
 // ** Pace Loader
 if (themeConfig.routingLoader) {
@@ -69,12 +71,53 @@ const onSignOut = () => {
 // ** Configure JSS & ClassName
 const App = props => {
   const { Component, pageProps } = props
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   // Variables
   const getLayout = Component.getLayout ?? (page => <Layout>{page}</Layout>)
   const authGuard = Component.authGuard ?? true
   const guestGuard = Component.guestGuard ?? false
   const aclAbilities = Component.acl ?? defaultACLObj
+
+  // Wrap content with appropriate providers based on client/server rendering
+  const renderContent = () => {
+    const content = (
+      <AuthProvider>
+        <ThemeComponent>
+          <WindowWrapper>
+            <Guard authGuard={authGuard} guestGuard={guestGuard}>
+              <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
+                {getLayout(<Component {...pageProps} />)}
+              </AclGuard>
+            </Guard>
+          </WindowWrapper>
+
+          <ReactHotToast>
+            <Toaster position={themeConfig.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+          </ReactHotToast>
+        </ThemeComponent>
+      </AuthProvider>
+    )
+
+    if (isClient) {
+      return (
+        <CivicAuthProvider
+          clientId="4a81963e-17a0-4e7b-9a5a-56314748c6d7" 
+          displayMode="redirect"
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+        >
+          {content}
+        </CivicAuthProvider>
+      )
+    }
+    
+    return content
+  }
 
   return (
     <Provider store={store}>
@@ -84,28 +127,7 @@ const App = props => {
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
 
-      <CivicAuthProvider
-        clientId="4a81963e-17a0-4e7b-9a5a-56314748c6d7"
-        displayMode="redirect"
-        onSignIn={onSignIn}
-        onSignOut={onSignOut}
-      >
-        <AuthProvider>
-          <ThemeComponent>
-            <WindowWrapper>
-              <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
-                  {getLayout(<Component {...pageProps} />)}
-                </AclGuard>
-              </Guard>
-            </WindowWrapper>
-
-            <ReactHotToast>
-              <Toaster position={themeConfig.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
-            </ReactHotToast>
-          </ThemeComponent>
-        </AuthProvider>
-      </CivicAuthProvider>
+      {renderContent()}
     </Provider>
   )
 }

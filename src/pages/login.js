@@ -113,13 +113,14 @@ const Login = () => {
       console.log("result", result);
       console.log("userMap", userMap);
 
-      localStorage.setItem("userData", JSON.stringify(userMap));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("userData", JSON.stringify(userMap));
+      }
       setUser(userMap);
       setUserData(result.data);
       if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
         setShowUpdateProfile(true);
       } else {
-       
         router.push("/home");
       }
     } catch (err) {
@@ -128,7 +129,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (typeof window !== 'undefined' && user) {
       connectWithCivic();
     }
     
