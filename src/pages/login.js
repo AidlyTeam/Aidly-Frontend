@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { Button, Typography, Container, Box } from "@mui/material";
+import { Button, Typography, Container, Box, Link } from "@mui/material";
 import Image from "next/image";
 import logo from "../assets/logo/Adsız tasarım.png";
 import { postAuth, civicAuth } from "@/store/auth/authSlice";
@@ -17,12 +17,39 @@ const Login = () => {
   const dispatch = useDispatch();
   const [showUpdateProfile, setShowUpdateProfile] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [isPhantomAvailable, setIsPhantomAvailable] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
+  // Check if we're on the client side and if Phantom is available
+  useEffect(() => {
+    setIsClient(true);
+    const checkPhantomAvailability = () => {
+      const isPhantomInstalled = 
+        typeof window !== 'undefined' && 
+        window.solana && 
+        window.solana.isPhantom;
+      setIsPhantomAvailable(isPhantomInstalled);
+    };
+    
+    checkPhantomAvailability();
+    
+    // Add event listener for when Phantom is injected after page load
+    window.addEventListener('load', checkPhantomAvailability);
+    return () => window.removeEventListener('load', checkPhantomAvailability);
+  }, []);
 
   // Function for Phantom Wallet login
   const connectPhantom = async () => {
+    // Check if window is available (prevents server-side rendering errors)
+    if (typeof window === 'undefined') {
+      console.error("Cannot connect to Phantom wallet during server-side rendering");
+      return;
+    }
+
+    // Check if Phantom is installed
     if (!window.solana?.isPhantom) {
-      alert("Phantom wallet not found. Please install the Phantom extension.");
+      window.open("https://phantom.app/", "_blank");
+      alert("Phantom wallet not found. Please install the Phantom extension and refresh the page.");
       return;
     }
 
@@ -60,6 +87,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error("Phantom connection error:", err);
+      alert("Failed to connect to Phantom wallet. Please make sure it's installed and unlocked.");
     }
   };
 
@@ -187,32 +215,59 @@ const Login = () => {
           mb={4}
           sx={{ color: "#333", fontSize: "1.1rem" }}
         >
-          Connect your Phantom wallet to access the app. Don't have one? Get it from the official site.
+          {isClient && !isPhantomAvailable 
+            ? "Phantom wallet is not detected. Please install it to continue."
+            : "Connect your Phantom wallet to access the app. Don't have one? Get it from the official site."}
         </Typography>
 
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "20px" }}>
-          <Button
-            variant="contained"
-            onClick={connectPhantom}
-            sx={{
-              px: 4,
-              py: 1.5,
-              fontSize: "1rem",
-              fontWeight: "bold",
-              textTransform: "none",
-              borderRadius: "12px",
-              background: "linear-gradient(to right, #63f1f9, #72F088)",
-              color: "#000",
-              boxShadow: "0 0 20px #63f1f9",
-              transition: "transform 0.3s",
-              "&:hover": {
-                transform: "scale(1.05)",
-                boxShadow: "0 0 25px #72F088",
-              },
-            }}
-          >
-            Connect Phantom
-          </Button>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "20px", flexWrap: "wrap" }}>
+          {isClient && !isPhantomAvailable ? (
+            <Button
+              variant="contained"
+              onClick={() => window.open("https://phantom.app/", "_blank")}
+              sx={{
+                px: 4,
+                py: 1.5,
+                fontSize: "1rem",
+                fontWeight: "bold",
+                textTransform: "none",
+                borderRadius: "12px",
+                background: "linear-gradient(to right, #63f1f9, #72F088)",
+                color: "#000",
+                boxShadow: "0 0 20px #63f1f9",
+                transition: "transform 0.3s",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  boxShadow: "0 0 25px #72F088",
+                },
+              }}
+            >
+              Install Phantom Wallet
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={connectPhantom}
+              sx={{
+                px: 4,
+                py: 1.5,
+                fontSize: "1rem",
+                fontWeight: "bold",
+                textTransform: "none",
+                borderRadius: "12px",
+                background: "linear-gradient(to right, #63f1f9, #72F088)",
+                color: "#000",
+                boxShadow: "0 0 20px #63f1f9",
+                transition: "transform 0.3s",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  boxShadow: "0 0 25px #72F088",
+                },
+              }}
+            >
+              Connect Phantom
+            </Button>
+          )}
           <Button
             variant="contained"
             onClick={() => {
