@@ -62,34 +62,28 @@ const Login = () => {
   
     try {
       console.log("Trying to connect to Phantom...");
-      
-      // First check if already connected
-      const currentConnection = await window.solana.connect({ onlyIfTrusted: true }).catch(() => null);
-      
-      if (!currentConnection) {
-        // If not already connected, request new connection
-        await window.solana.connect();
-      }
-      
-      // Get the public key after connection
-      const publicKey = window.solana.publicKey;
+  
+      // Connect to Phantom wallet
+      const response = await window.solana.connect();
+      const publicKey = response.publicKey?.toString();
+  
       if (!publicKey) {
-        throw new Error("No public key found");
+        throw new Error("Wallet connected but public key not found.");
       }
-
-      const walletAddress = publicKey.toString();
+  
       const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
       const encodedMessage = new TextEncoder().encode(message);
   
-      console.log("Requesting message signing...");
+      console.log("Requesting signature for message...");
       const signed = await window.solana.signMessage(encodedMessage, "utf8");
       const signatureBase58 = bs58.encode(signed.signature);
   
-      console.log("Message signed, proceeding with authentication...");
+      console.log("Signature complete, sending auth payload...");
+  
       const payload = {
         message,
         signatureBase58,
-        walletAddress,
+        walletAddress: publicKey,
       };
   
       const result = await dispatch(postAuth(payload)).unwrap();
@@ -102,24 +96,30 @@ const Login = () => {
       setUser(user);
       setUserData(result.data);
   
-      if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
+      if (
+        result.data?.role === "first" ||
+        result.data?.name === "" ||
+        result.data?.surname === ""
+      ) {
         setShowUpdateProfile(true);
       } else {
         router.push("/home");
       }
     } catch (err) {
       console.error("Phantom error:", err);
+  
       if (err.code === 4001) {
-        alert("Connection rejected. Please approve the connection request in your Phantom wallet.");
+        alert("Connection rejected. Please approve the request in your Phantom wallet.");
       } else if (err.code === -32002) {
         alert("Connection request already pending. Please check your Phantom wallet.");
-      } else if (err.message?.includes("already connected")) {
-        alert("Wallet is already connected. Please try disconnecting and connecting again.");
+      } else if (err.message?.includes("User rejected")) {
+        alert("You rejected the connection request.");
       } else {
-        alert(`Failed to connect to Phantom wallet: ${err.message || 'Unknown error'}`);
+        alert(`Failed to connect Phantom wallet: ${err.message || 'Unknown error'}`);
       }
     }
   };
+  
   
 
   // Profile update handler
