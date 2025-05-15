@@ -62,19 +62,30 @@ const Login = () => {
   
     try {
       console.log("Trying to connect to Phantom...");
-  
-      // Bu satırı değiştiriyoruz
-      const resp = await window.solana.request({ method: "connect" });
-  
-      console.log("Connected:", resp);
-  
-      const walletAddress = resp.publicKey.toString();
+      
+      // First check if already connected
+      const currentConnection = await window.solana.connect({ onlyIfTrusted: true }).catch(() => null);
+      
+      if (!currentConnection) {
+        // If not already connected, request new connection
+        await window.solana.connect();
+      }
+      
+      // Get the public key after connection
+      const publicKey = window.solana.publicKey;
+      if (!publicKey) {
+        throw new Error("No public key found");
+      }
+
+      const walletAddress = publicKey.toString();
       const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
       const encodedMessage = new TextEncoder().encode(message);
   
+      console.log("Requesting message signing...");
       const signed = await window.solana.signMessage(encodedMessage, "utf8");
       const signatureBase58 = bs58.encode(signed.signature);
   
+      console.log("Message signed, proceeding with authentication...");
       const payload = {
         message,
         signatureBase58,
@@ -100,8 +111,12 @@ const Login = () => {
       console.error("Phantom error:", err);
       if (err.code === 4001) {
         alert("Connection rejected. Please approve the connection request in your Phantom wallet.");
+      } else if (err.code === -32002) {
+        alert("Connection request already pending. Please check your Phantom wallet.");
+      } else if (err.message?.includes("already connected")) {
+        alert("Wallet is already connected. Please try disconnecting and connecting again.");
       } else {
-        alert("Failed to connect to Phantom wallet.");
+        alert(`Failed to connect to Phantom wallet: ${err.message || 'Unknown error'}`);
       }
     }
   };
@@ -145,11 +160,15 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && user) {
+    if (
+      typeof window !== 'undefined' &&
+      window.crypto?.subtle &&
+      user
+    ) {
       connectWithCivic();
     }
-    
   }, [user]);
+  
 
  
 
@@ -291,7 +310,11 @@ const Login = () => {
           <Button
             variant="contained"
             onClick={() => {
-              signIn();
+              if (typeof window !== "undefined" && window.crypto?.subtle) {
+                signIn();
+              } else {
+                alert("Civic authentication requires a secure browser environment.");
+              }
             }}
             sx={{
               px: 4,
