@@ -63,27 +63,26 @@ const Login = () => {
     try {
       console.log("Trying to connect to Phantom...");
   
-      // Connect to Phantom wallet
-      const response = await window.solana.connect();
-      const publicKey = response.publicKey?.toString();
+      // Always request connection
+      const { publicKey } = await window.solana.connect(); // remove onlyIfTrusted
   
       if (!publicKey) {
-        throw new Error("Wallet connected but public key not found.");
+        throw new Error("No public key returned by Phantom.");
       }
   
+      const walletAddress = publicKey.toString();
       const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
       const encodedMessage = new TextEncoder().encode(message);
   
-      console.log("Requesting signature for message...");
+      console.log("Requesting message signing...");
       const signed = await window.solana.signMessage(encodedMessage, "utf8");
       const signatureBase58 = bs58.encode(signed.signature);
   
-      console.log("Signature complete, sending auth payload...");
-  
+      console.log("Message signed, proceeding with authentication...");
       const payload = {
         message,
         signatureBase58,
-        walletAddress: publicKey,
+        walletAddress,
       };
   
       const result = await dispatch(postAuth(payload)).unwrap();
@@ -107,18 +106,18 @@ const Login = () => {
       }
     } catch (err) {
       console.error("Phantom error:", err);
-  
       if (err.code === 4001) {
-        alert("Connection rejected. Please approve the request in your Phantom wallet.");
+        alert("Connection rejected. Please approve the connection request in your Phantom wallet.");
       } else if (err.code === -32002) {
         alert("Connection request already pending. Please check your Phantom wallet.");
-      } else if (err.message?.includes("User rejected")) {
-        alert("You rejected the connection request.");
+      } else if (err.message?.includes("already connected")) {
+        alert("Wallet is already connected. Please try disconnecting and connecting again.");
       } else {
-        alert(`Failed to connect Phantom wallet: ${err.message || 'Unknown error'}`);
+        alert(`Failed to connect to Phantom wallet: ${err.message || 'Unknown error'}`);
       }
     }
   };
+  
   
   
 
