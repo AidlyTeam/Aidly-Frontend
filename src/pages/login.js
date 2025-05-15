@@ -55,73 +55,57 @@ const Login = () => {
 
   // Function for Phantom Wallet login
   const connectPhantom = async () => {
-    // Check if window is available (prevents server-side rendering errors)
-    if (typeof window === 'undefined') {
-      console.error("Cannot connect to Phantom wallet during server-side rendering");
+    if (typeof window === 'undefined' || !window.solana || !window.solana.isPhantom) {
+      alert("Phantom wallet not found. Please install Phantom extension.");
       return;
     }
-
-    console.log("Connect Phantom button clicked");
-    
-    // Force re-check Phantom availability
-    const isPhantomInstalled = window.solana && window.solana.isPhantom;
-    console.log("Phantom availability on click:", isPhantomInstalled);
-    
-    // Check if Phantom is installed
-    if (!isPhantomInstalled) {
-      console.log("Phantom not detected, redirecting to installation page");
-      window.open("https://phantom.app/", "_blank");
-      alert("Phantom wallet not found. Please install the Phantom extension and refresh the page.");
-      return;
-    }
-
+  
     try {
-      console.log("Attempting to connect to Phantom...");
-      const resp = await window.solana.connect();
-      console.log("Connection successful:", resp);
+      console.log("Trying to connect to Phantom...");
+  
+      // Bu satırı değiştiriyoruz
+      const resp = await window.solana.request({ method: "connect" });
+  
+      console.log("Connected:", resp);
+  
       const walletAddress = resp.publicKey.toString();
       const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
       const encodedMessage = new TextEncoder().encode(message);
-      
-      console.log("Requesting message signing...");
+  
       const signed = await window.solana.signMessage(encodedMessage, "utf8");
-
       const signatureBase58 = bs58.encode(signed.signature);
-
+  
       const payload = {
         message,
         signatureBase58,
         walletAddress,
       };
-
-      console.log("Sending auth request to backend...");
+  
       const result = await dispatch(postAuth(payload)).unwrap();
-      console.log("Auth response:", result);
-
       const user = {
         ...result,
         role: result?.data?.role,
       };
-
+  
       localStorage.setItem("userData", JSON.stringify(user));
       setUser(user);
       setUserData(result.data);
-      
+  
       if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
         setShowUpdateProfile(true);
       } else {
         router.push("/home");
       }
     } catch (err) {
-      console.error("Phantom connection error:", err);
-      // More specific error messages based on error type
+      console.error("Phantom error:", err);
       if (err.code === 4001) {
         alert("Connection rejected. Please approve the connection request in your Phantom wallet.");
       } else {
-        alert("Failed to connect to Phantom wallet. Please make sure it's installed and unlocked.");
+        alert("Failed to connect to Phantom wallet.");
       }
     }
   };
+  
 
   // Profile update handler
   const handleProfileUpdate = () => {
