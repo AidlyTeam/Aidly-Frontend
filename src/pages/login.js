@@ -55,27 +55,51 @@ const Login = () => {
 
   // Function for Phantom Wallet login
   const connectPhantom = async () => {
-    if (typeof window === 'undefined' || !window.solana || !window.solana.isPhantom) {
+    if (typeof window === 'undefined') {
+      console.error("Window object is not available");
+      return;
+    }
+
+    // Check if Phantom is installed
+    const provider = window?.phantom?.solana;
+    if (!provider?.isPhantom) {
       alert("Phantom wallet not found. Please install Phantom extension.");
       return;
     }
   
     try {
       console.log("Trying to connect to Phantom...");
-  
-      // Always request connection
-      const { publicKey } = await window.solana.connect(); // remove onlyIfTrusted
-  
-      if (!publicKey) {
-        throw new Error("No public key returned by Phantom.");
+      
+      // Try to eagerly connect
+      try {
+        const resp = await provider.connect({ onlyIfTrusted: true });
+        console.log("Already connected:", resp);
+      } catch (err) {
+        console.log("Not already connected, requesting new connection...");
+        // Request new connection
+        const resp = await provider.connect();
+        console.log("New connection established:", resp);
       }
-  
+      
+      // Verify connection
+      if (!provider.isConnected) {
+        throw new Error("Failed to connect to Phantom");
+      }
+
+      console.log("Getting public key...");
+      const publicKey = provider.publicKey;
+      if (!publicKey) {
+        throw new Error("No public key found");
+      }
+
       const walletAddress = publicKey.toString();
+      console.log("Wallet address:", walletAddress);
+
       const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
       const encodedMessage = new TextEncoder().encode(message);
   
       console.log("Requesting message signing...");
-      const signed = await window.solana.signMessage(encodedMessage, "utf8");
+      const signed = await provider.signMessage(encodedMessage, "utf8");
       const signatureBase58 = bs58.encode(signed.signature);
   
       console.log("Message signed, proceeding with authentication...");
@@ -86,6 +110,8 @@ const Login = () => {
       };
   
       const result = await dispatch(postAuth(payload)).unwrap();
+      console.log("Authentication result:", result);
+
       const user = {
         ...result,
         role: result?.data?.role,
@@ -95,11 +121,7 @@ const Login = () => {
       setUser(user);
       setUserData(result.data);
   
-      if (
-        result.data?.role === "first" ||
-        result.data?.name === "" ||
-        result.data?.surname === ""
-      ) {
+      if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
         setShowUpdateProfile(true);
       } else {
         router.push("/home");
@@ -111,7 +133,14 @@ const Login = () => {
       } else if (err.code === -32002) {
         alert("Connection request already pending. Please check your Phantom wallet.");
       } else if (err.message?.includes("already connected")) {
-        alert("Wallet is already connected. Please try disconnecting and connecting again.");
+        // Try disconnecting and reconnecting
+        try {
+          await provider.disconnect();
+          await provider.connect();
+        } catch (reconnectErr) {
+          console.error("Reconnection failed:", reconnectErr);
+          alert("Failed to reconnect. Please refresh the page and try again.");
+        }
       } else {
         alert(`Failed to connect to Phantom wallet: ${err.message || 'Unknown error'}`);
       }
