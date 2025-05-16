@@ -41,7 +41,6 @@ const PersonalInfoForm = ({ initialData = {} }) => {
 
 
       const result = await dispatch(connectWallet(payload)).unwrap();
-      console.log(result);
     } catch (err) {
       console.error("Phantom connection error:", err);
     }

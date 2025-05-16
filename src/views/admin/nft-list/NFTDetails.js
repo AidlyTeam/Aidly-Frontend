@@ -62,7 +62,6 @@ const NFTDetails = () => {
         ...formData,
         donationThreshold: Number(formData.donationThreshold)
       }
-      console.log(submitData)
       if (isEdit) {
         await dispatch(updateNFT({ id, data: submitData })).unwrap().then((res) => {
           if (res.statusCode === 200) {

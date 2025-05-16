@@ -23,40 +23,39 @@ const Login = () => {
   // Check if we're on the client side and if Phantom is available
   useEffect(() => {
     setIsClient(true);
-    
+
     // Wait a moment for Phantom to initialize in the browser
     const timeoutId = setTimeout(() => {
       const checkPhantomAvailability = () => {
-        const isPhantomInstalled = 
-          typeof window !== 'undefined' && 
-          window.solana && 
+        const isPhantomInstalled =
+          typeof window !== 'undefined' &&
+          window.solana &&
           window.solana.isPhantom;
-        
-        console.log("Phantom wallet detection:", { 
-          isPhantomInstalled, 
+
+        console.log("Phantom wallet detection:", {
+          isPhantomInstalled,
           windowExists: typeof window !== 'undefined',
           solanaExists: typeof window !== 'undefined' && !!window.solana
         });
-        
+
         setIsPhantomAvailable(isPhantomInstalled);
       };
-      
+
       checkPhantomAvailability();
-      
+
       // Check again after a brief delay to account for delayed injection
       window.addEventListener('load', checkPhantomAvailability);
       return () => {
         window.removeEventListener('load', checkPhantomAvailability);
       };
     }, 500); // Small delay to ensure DOM is fully loaded
-    
+
     return () => clearTimeout(timeoutId);
   }, []);
 
   // Function for Phantom Wallet login
   const connectPhantom = async () => {
     if (typeof window === 'undefined') {
-      console.error("Window object is not available");
       return;
     }
 
@@ -66,61 +65,51 @@ const Login = () => {
       alert("Phantom wallet not found. Please install Phantom extension.");
       return;
     }
-  
+
     try {
-      console.log("Trying to connect to Phantom...");
-      
       // Try to eagerly connect
       try {
         const resp = await provider.connect({ onlyIfTrusted: true });
-        console.log("Already connected:", resp);
       } catch (err) {
-        console.log("Not already connected, requesting new connection...");
         // Request new connection
         const resp = await provider.connect();
-        console.log("New connection established:", resp);
       }
-      
+
       // Verify connection
       if (!provider.isConnected) {
         throw new Error("Failed to connect to Phantom");
       }
 
-      console.log("Getting public key...");
       const publicKey = provider.publicKey;
       if (!publicKey) {
         throw new Error("No public key found");
       }
 
       const walletAddress = publicKey.toString();
-      console.log("Wallet address:", walletAddress);
 
       const message = `Giriş doğrulaması: ${new Date().toISOString()}`;
       const encodedMessage = new TextEncoder().encode(message);
-  
-      console.log("Requesting message signing...");
+
       const signed = await provider.signMessage(encodedMessage, "utf8");
       const signatureBase58 = bs58.encode(signed.signature);
-  
-      console.log("Message signed, proceeding with authentication...");
+
       const payload = {
         message,
         signatureBase58,
         walletAddress,
       };
-  
+
       const result = await dispatch(postAuth(payload)).unwrap();
-      console.log("Authentication result:", result);
 
       const user = {
         ...result,
         role: result?.data?.role,
       };
-  
+
       localStorage.setItem("userData", JSON.stringify(user));
       setUser(user);
       setUserData(result.data);
-  
+
       if (result.data?.role === "first" || result.data?.name === "" || result.data?.surname === "") {
         setShowUpdateProfile(true);
       } else {
@@ -146,9 +135,9 @@ const Login = () => {
       }
     }
   };
-  
-  
-  
+
+
+
 
   // Profile update handler
   const handleProfileUpdate = () => {
@@ -169,8 +158,6 @@ const Login = () => {
         ...result,
         role: result?.data?.role,
       };
-      console.log("result", result);
-      console.log("userMap", userMap);
 
       if (typeof window !== 'undefined') {
         localStorage.setItem("userData", JSON.stringify(userMap));
@@ -196,11 +183,11 @@ const Login = () => {
       connectWithCivic();
     }
   }, [user]);
-  
 
- 
 
- 
+
+
+
 
 
   return (
@@ -279,7 +266,7 @@ const Login = () => {
           mb={4}
           sx={{ color: "#333", fontSize: "1.1rem" }}
         >
-          {isClient && !isPhantomAvailable 
+          {isClient && !isPhantomAvailable
             ? "Phantom wallet is not detected. Please install it to continue."
             : "Connect your Phantom wallet to access the app. Don't have one? Get it from the official site."}
         </Typography>
@@ -289,7 +276,6 @@ const Login = () => {
             <Button
               variant="contained"
               onClick={() => {
-                console.log("Install button clicked");
                 window.open("https://phantom.app/", "_blank");
               }}
               sx={{

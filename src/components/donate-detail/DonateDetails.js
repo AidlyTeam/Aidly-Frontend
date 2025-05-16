@@ -41,8 +41,6 @@ const DonateDetailPagesCard = ({ donateDetails = [], haveWallet = false }) => {
     setOpen(false);
   };
 
-  console.log(donateDetails);
-
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={12} md={12} key={donateDetails.id}>
@@ -209,9 +207,9 @@ const DonateDetailPagesCard = ({ donateDetails = [], haveWallet = false }) => {
               </Box>
               <LinearProgress
                 variant="determinate"
-                value={ (Number(donateDetails.raisedAmount) /
+                value={(Number(donateDetails.raisedAmount) /
                   Number(donateDetails.targetAmount)) *
-                100}
+                  100}
                 sx={{
                   height: 10,
                   borderRadius: 5,
@@ -242,8 +240,8 @@ const DonateDetailPagesCard = ({ donateDetails = [], haveWallet = false }) => {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%', justifyContent: 'flex-end' }}>
               {!haveWallet && (
-                <Tooltip 
-                  title="No wallet connected. Please connect your wallet from profile to donate." 
+                <Tooltip
+                  title="No wallet connected. Please connect your wallet from profile to donate."
                   arrow
                   componentsProps={{
                     tooltip: {
@@ -258,11 +256,11 @@ const DonateDetailPagesCard = ({ donateDetails = [], haveWallet = false }) => {
                     },
                   }}
                 >
-                  <InfoIcon 
-                    sx={{ 
+                  <InfoIcon
+                    sx={{
                       color: theme.palette.error.main,
                       cursor: 'pointer',
-                    }} 
+                    }}
                   />
                 </Tooltip>
               )}
@@ -274,13 +272,13 @@ const DonateDetailPagesCard = ({ donateDetails = [], haveWallet = false }) => {
                   fontSize: "16px",
                   padding: "8px 36px",
                   borderRadius: "12px",
-                  background: haveWallet 
+                  background: haveWallet
                     ? "linear-gradient(135deg, #72F088 0%, #63f1f9 100%)"
                     : "linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%)",
                   color: "#ffff",
                   textTransform: "none",
                   fontWeight: "bold",
-                  boxShadow: haveWallet 
+                  boxShadow: haveWallet
                     ? `0 0 20px ${theme.palette.primary.main}`
                     : 'none',
                   position: "relative",

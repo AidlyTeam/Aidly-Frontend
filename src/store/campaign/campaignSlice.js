@@ -21,7 +21,7 @@ export const getCampaign = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-     
+
       if (response.status === 200) {
         return response.data;
       }
@@ -43,7 +43,7 @@ export const getCampaignById = createAsyncThunk(
         },
         data: JSON.stringify(data),
       });
-     
+
       if (response.status === 200) {
         return response.data;
       }
@@ -65,14 +65,12 @@ export const createCampaign = createAsyncThunk(
         },
         data: data,
       });
-      console.log(response);
-     
+
       if (response.status === 200) {
         return response.data;
       }
     } catch (error) {
-      console.log(error);
-      return rejectWithValue(error.response?.data?.message|| error.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -101,12 +99,12 @@ export const updateCampaign = createAsyncThunk(
         },
         data: formData,
       });
-     
+
       if (response.status === 200) {
         return response.data;
       }
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message|| error.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -123,12 +121,12 @@ export const deleteCampaign = createAsyncThunk(
         },
         data: JSON.stringify(data),
       });
-     
+
       if (response.status === 200) {
         return response.data;
       }
     } catch (response) {
-      return rejectWithValue(error.response?.data?.message|| error.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -145,12 +143,12 @@ export const addCategoryToCampaign = createAsyncThunk(
         },
         data: JSON.stringify(data),
       });
-      
+
       if (response.status === 200) {
         return response.data;
       }
     } catch (response) {
-      return rejectWithValue(error.response?.data?.message|| error.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -159,7 +157,7 @@ export const removeCategoryFromCampaign = createAsyncThunk(
   "campaign/removeCategoryFromCampaign",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios({    
+      const response = await axios({
         method: "DELETE",
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/private/campaign/${data.id}/category`,
         headers: {
@@ -167,12 +165,12 @@ export const removeCategoryFromCampaign = createAsyncThunk(
         },
         data: JSON.stringify(data),
       });
-      
+
       if (response.status === 200) {
         return response.data;
       }
     } catch (response) {
-      return rejectWithValue(error.response?.data?.message|| error.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -189,12 +187,12 @@ export const isValidCampaign = createAsyncThunk(
         },
         data: JSON.stringify(data),
       });
-      
+
       if (response.status === 200) {
         return response.data;
       }
     } catch (response) {
-      return rejectWithValue(error.response?.data?.message|| error.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -235,7 +233,7 @@ const campaignSlice = createSlice({
         showToast("dismiss")
         showToast("success", "Campaign created successfully");
       })
-      .addCase(createCampaign.rejected, (state,action) => {
+      .addCase(createCampaign.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         showToast("dismiss")
@@ -250,7 +248,7 @@ const campaignSlice = createSlice({
         showToast("dismiss")
         showToast("success", "Campaign updated successfully");
       })
-      .addCase(updateCampaign.rejected, (state,action) => {
+      .addCase(updateCampaign.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         showToast("dismiss")
@@ -265,7 +263,7 @@ const campaignSlice = createSlice({
         showToast("dismiss")
         showToast("success", "Campaign deleted successfully");
       })
-      .addCase(deleteCampaign.rejected, (state,action) => {
+      .addCase(deleteCampaign.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         showToast("dismiss")
@@ -280,7 +278,7 @@ const campaignSlice = createSlice({
         showToast("dismiss")
         showToast("success", "Category added to campaign successfully");
       })
-      .addCase(addCategoryToCampaign.rejected, (state,action) => {
+      .addCase(addCategoryToCampaign.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         showToast("dismiss")
@@ -295,7 +293,7 @@ const campaignSlice = createSlice({
         showToast("dismiss")
         showToast("success", "Category removed from campaign successfully");
       })
-      .addCase(removeCategoryFromCampaign.rejected, (state,action) => {
+      .addCase(removeCategoryFromCampaign.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         showToast("dismiss")
@@ -312,7 +310,7 @@ const campaignSlice = createSlice({
         state.loading = false;
         state.error = true;
       })
-      
+
   },
 });
 

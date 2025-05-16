@@ -24,8 +24,6 @@ const PasswordChangeForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log("Password change submitted");
   };
 
   return (

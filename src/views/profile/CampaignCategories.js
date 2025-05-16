@@ -31,7 +31,6 @@ const CampaignCategories = () => {
   const { campaign: campaignSlice, category: categorySlice } = useSelector((state) => state);
   const categories = categorySlice?.data?.data?.categories || [];
   const campaignCategories = campaignSlice?.data?.data?.categories?.categories || [];
-  console.log('Campaign Categories:', campaignCategories);
 
   useEffect(() => {
     if (id) {

@@ -20,9 +20,6 @@ const ProfileDonate = () => {
     router.push("/donates");
   };
 
-  console.log(donationSlice.data.data);
-
-
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
