@@ -54,15 +54,14 @@ const BadgeDetails = () => {
     e.preventDefault()
     try {
       if (isEdit) {
-         await dispatch(updateBadge({ id, data: formData })).unwrap().then((res) => {
-          console.log(res);
+        await dispatch(updateBadge({ id, data: formData })).unwrap().then((res) => {
           if (res.statusCode === 200) {
             router.push('/admin/badge-list')
           }
-         })
+        })
       } else {
         await dispatch(createBadge(formData)).unwrap()
-       
+
       }
     } catch (error) {
     }
@@ -130,9 +129,9 @@ const BadgeDetails = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter donation threshold"
-                // endAdornment={
-                //   <InputAdornment position="start">$</InputAdornment>
-                // }
+              // endAdornment={
+              //   <InputAdornment position="start">$</InputAdornment>
+              // }
               />
             </Grid>
             <Grid item xs={12}>
@@ -164,49 +163,49 @@ const BadgeDetails = () => {
                   </Button>
                 </label>
                 {previewUrl && (
-                 <Box
-                 sx={{
-                   width: 100,
-                   height: 100,
-                   borderRadius: "50%",
-                   background:
-                     "linear-gradient(45deg, rgba(0, 240, 255, 0.13), rgba(0, 240, 255, 0.27))",
-                   border: "2px solid #00F0FF",
-                   display: "flex",
-                   flexDirection: "column",
-                   alignItems: "center",
-                   justifyContent: "center",
-                   padding: 1,
-                   position: "relative",
-                   overflow: "hidden",
-                   transition: "transform 0.3s ease",
-                   "&:hover": {
-                     transform: "scale(1.05)",
-                   },
-                   "&::before": {
-                     content: '""',
-                     position: "absolute",
-                     top: 0,
-                     left: 0,
-                     right: 0,
-                     bottom: 0,
-                     background:
-                       "linear-gradient(45deg, rgba(0, 240, 255, 0.07), rgba(0, 240, 255, 0.13))",
-                     animation: "rotate 3s linear infinite",
-                   },
-                   "&::after": {
-                     content: '""',
-                     position: "absolute",
-                     top: -50,
-                     left: -50,
-                     right: -50,
-                     bottom: -50,
-                     background:
-                       "radial-gradient(circle, rgba(0, 240, 255, 0.13) 0%, transparent 70%)",
-                     animation: "pulse 2s ease-in-out infinite",
-                   },
-                 }}
-               >
+                  <Box
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      borderRadius: "50%",
+                      background:
+                        "linear-gradient(45deg, rgba(0, 240, 255, 0.13), rgba(0, 240, 255, 0.27))",
+                      border: "2px solid #00F0FF",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: 1,
+                      position: "relative",
+                      overflow: "hidden",
+                      transition: "transform 0.3s ease",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                      },
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background:
+                          "linear-gradient(45deg, rgba(0, 240, 255, 0.07), rgba(0, 240, 255, 0.13))",
+                        animation: "rotate 3s linear infinite",
+                      },
+                      "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        top: -50,
+                        left: -50,
+                        right: -50,
+                        bottom: -50,
+                        background:
+                          "radial-gradient(circle, rgba(0, 240, 255, 0.13) 0%, transparent 70%)",
+                        animation: "pulse 2s ease-in-out infinite",
+                      },
+                    }}
+                  >
                     <img
                       src={previewUrl}
                       alt="Badge preview"

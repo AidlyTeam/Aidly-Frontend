@@ -30,8 +30,6 @@ const OrganizationList = () => {
     dispatch(getCampaignsForAdmin());
   }, [dispatch]);
 
-  console.log(campaignSlice);
-
   return (
     <Box>
       <Box>
