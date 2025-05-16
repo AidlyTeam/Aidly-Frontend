@@ -5,6 +5,7 @@ import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural
 import { connectWallet, updateProfile } from "@/store/user/userSlice";
 import { useDispatch } from "react-redux";
 import bs58 from "bs58";
+import { showToast } from "@/utils/showToast";
 
 const PersonalInfoForm = ({ initialData = {} }) => {
   const [formData, setFormData] = useState({
@@ -42,7 +43,8 @@ const PersonalInfoForm = ({ initialData = {} }) => {
 
       const result = await dispatch(connectWallet(payload)).unwrap();
     } catch (err) {
-      console.error("Phantom connection error:", err);
+      showToast("dismiss")
+      showToast("error", "This Wallet Already Being Used!")
     }
   };
 
