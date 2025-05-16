@@ -21,14 +21,14 @@ const CustomBreadcrumbs = ({ titles }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("userData");
+    localStorage.removeItem("user");
     setUser(null);
     setLoading(false);
     setIsInitialized(false);
     signOut();
-    showToast("dismiss" );
+    showToast("dismiss");
     showToast("loading", "Leaving the app");
     router.replace("/login");
-
   };
 
   return (

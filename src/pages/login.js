@@ -32,12 +32,6 @@ const Login = () => {
           window.solana &&
           window.solana.isPhantom;
 
-        console.log("Phantom wallet detection:", {
-          isPhantomInstalled,
-          windowExists: typeof window !== 'undefined',
-          solanaExists: typeof window !== 'undefined' && !!window.solana
-        });
-
         setIsPhantomAvailable(isPhantomInstalled);
       };
 

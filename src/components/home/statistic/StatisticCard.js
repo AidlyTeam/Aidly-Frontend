@@ -6,21 +6,21 @@ import BusinessIcon from '@mui/icons-material/Business';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import { hexToRGBA } from "@/utils/hex-to-rgba";
 
-const StatisticCard = () => {
+const StatisticCard = ({ totalUsers, totalCampaigns, totalDonations }) => {
   const data = [
     {
       title: "Total Users",
-      count: 500,
+      count: totalUsers,
       icon: PeopleAltIcon,
     },
     {
-      title: "Total Companies",
-      count: 20,
+      title: "Total Campaigns",
+      count: totalCampaigns,
       icon: BusinessIcon,
     },
     {
       title: "Total Donations",
-      count: 1000,
+      count: totalDonations,
       icon: VolunteerActivismIcon,
     },
   ];
@@ -114,7 +114,7 @@ const StatisticCard = () => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    backgroundColor: hexToRGBA(theme.palette.info.main,0.8),
+                    backgroundColor: hexToRGBA(theme.palette.info.main, 0.8),
                     border: `2px solid ${theme.palette.info.dark}`,
                     borderRadius: "10px",
                     padding: 2,
