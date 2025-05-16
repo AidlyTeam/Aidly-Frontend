@@ -18,12 +18,11 @@ const Layout = ({ children }) => {
     const [mounted, setMounted] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isEmergencyHovered, setIsEmergencyHovered] = useState(false);
-    
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("md")); 
 
-    const navbarWidth = 300; 
-    
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+    const navbarWidth = 300;
 
     useEffect(() => {
         setMounted(true);
@@ -40,14 +39,14 @@ const Layout = ({ children }) => {
     return (
         <Fragment>
             <Box sx={{ width: "100%", display: "flex", minHeight: "100vh" }}>
-                
+
                 {isMobile && (
                     <IconButton
-                        sx={{ 
-                            position: "fixed", 
-                            top: 16, 
-                            right: 16, 
-                            zIndex: 1300, 
+                        sx={{
+                            position: "fixed",
+                            top: 16,
+                            right: 16,
+                            zIndex: 1300,
                             "&:hover": {
                                 backgroundColor: mobileOpen ? theme.palette.primary.dark : "transparent",
                             },
@@ -63,10 +62,10 @@ const Layout = ({ children }) => {
                 )}
 
                 {!isMobile && (
-                    <Box 
+                    <Box
                         sx={{
-                            position: "fixed", 
-                            left: 0, 
+                            position: "fixed",
+                            left: 0,
                             top: 0,
                             color: "white",
                             zIndex: 1000
@@ -77,13 +76,13 @@ const Layout = ({ children }) => {
                 )}
 
                 <Drawer
-                    anchor="right" 
+                    anchor="right"
                     open={mobileOpen}
                     onClose={() => setMobileOpen(false)}
                     sx={{
-                        "& .MuiDrawer-paper": { 
-                            width: navbarWidth, 
-                            color: theme.palette.primary.main, 
+                        "& .MuiDrawer-paper": {
+                            width: navbarWidth,
+                            color: theme.palette.primary.main,
                         },
                     }}
                 >
@@ -93,17 +92,17 @@ const Layout = ({ children }) => {
                 <Box
                     sx={{
                         flexGrow: 1,
-                        ml: isMobile ? 0 : `${navbarWidth}px`, 
+                        ml: isMobile ? 0 : `${navbarWidth}px`,
                         px: 3,
                         py: 5,
                         maxWidth: isMobile ? "100%" : `calc(100% - ${navbarWidth}px)`,
                     }}
                 >
                     <CustomBreadcrumbs titles={titles} />
-                    
+
 
                     <Box sx={{ mt: "1rem" }}>{children}</Box>
-                    
+
                 </Box>
             </Box>
 
