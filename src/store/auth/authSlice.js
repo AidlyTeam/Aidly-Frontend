@@ -52,6 +52,28 @@ export const civicAuth = createAsyncThunk(
   }
 );
 
+export const getLogout = createAsyncThunk(
+  "auth/getLogout",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios({
+        method: "POST",
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/public/logout`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify(data),
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (response) {
+      return rejectWithValue(response.message || error.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
@@ -65,6 +87,17 @@ const authSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(postAuth.rejected, (state) => {
+        state.loading = false;
+        state.error = true;
+      })
+      .addCase(getLogout.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getLogout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(getLogout.rejected, (state) => {
         state.loading = false;
         state.error = true;
       })

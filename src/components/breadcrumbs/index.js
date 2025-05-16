@@ -2,7 +2,6 @@ import {
   Breadcrumbs,
   Link,
   Typography,
-  Button,
   Box,
   IconButton,
 } from "@mui/material";
@@ -12,24 +11,46 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import CustomTooltip from "../tooltip";
 import { useRouter } from "next/router";
 import { useUser } from "@civic/auth/react";
+import { useDispatch } from "react-redux"
 import { showToast } from "@/utils/showToast";
+import { getLogout } from "@/store/auth/authSlice";
 
 const CustomBreadcrumbs = ({ titles }) => {
   const { user, setUser, setLoading, setIsInitialized } = useAuth();
   const router = useRouter();
   const { signOut } = useUser();
+  const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    localStorage.removeItem("userData");
-    localStorage.removeItem("user");
-    setUser(null);
-    setLoading(false);
-    setIsInitialized(false);
-    signOut();
-    showToast("dismiss");
-    showToast("loading", "Leaving the app");
-    router.replace("/login");
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+
+      // Backend logout
+      await dispatch(getLogout()).unwrap();
+      await signOut();
+
+      // Local clear
+      localStorage.removeItem("userData");
+      localStorage.removeItem("user");
+      setUser(null);
+      setIsInitialized(false);
+
+      // Toast
+      showToast("dismiss");
+      showToast("loading", "Leaving the app");
+
+      // Delay eklersen Civic'in çıkışı kesinleşir
+      await new Promise((res) => setTimeout(res, 500)); // Yarım saniyelik gecikme
+
+      router.replace("/login"); // Eğer Civic yönlendirme yapmıyorsa burası çalışır
+    } catch (error) {
+      console.error("Logout error:", error);
+      showToast("error", "Error While Logging Out!");
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <Box
